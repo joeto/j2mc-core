@@ -31,7 +31,7 @@ public class J2MC_Core extends JavaPlugin {
 
     public void messageByPermission(String permission, String message) {
         for (final Player player : this.getServer().getOnlinePlayers()) {
-            if (player != null) {
+            if (player != null && player.hasPermission(permission)) {
                 player.sendMessage(message);
             }
         }
