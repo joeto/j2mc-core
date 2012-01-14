@@ -1,0 +1,6 @@
+name: J2MC_Core
+main: to.joe.j2mc.core.J2MC_Core
+version: 0.0prealpha
+website: http://forums.joe.to
+author: J2 Minecraft Plugin Team
+description: Core.

@@ -1,0 +1,11 @@
+
+Config:
+
+General:
+  server-id: 
+MySQL:
+  database: 
+  username: 
+  password: 
+Permissions:
+  admin-flags: 
