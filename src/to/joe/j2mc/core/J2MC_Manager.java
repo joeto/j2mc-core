@@ -6,6 +6,7 @@ import to.joe.j2mc.core.permissions.Permissions;
 import to.joe.j2mc.core.visibility.Visibility;
 
 public class J2MC_Manager {
+	
     private static J2MC_Manager self = new J2MC_Manager();
 
     public static J2MC_Core getCore() {
@@ -45,7 +46,7 @@ public class J2MC_Manager {
     private Visibility visibility;
 
     private J2MC_Core core;
-
+    
     private int serverID;
 
     public void setCore(J2MC_Core core) {

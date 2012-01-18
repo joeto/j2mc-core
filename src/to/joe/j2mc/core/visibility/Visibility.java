@@ -56,7 +56,9 @@ public class Visibility {
         for (final Player p : J2MC_Manager.getCore().getServer().getOnlinePlayers()) {
             try {
                 if (!hidingVanished || !VanishNoPacket.isVanished(p.getName())) {
-                    players.add(p);
+                	if(p.getName().toLowerCase().contains(target.toLowerCase())){
+                		players.add(p);
+                	}
                 }
             } catch (final VanishNotLoadedException e) {
                 J2MC_Manager.getLog().severe("VanishNoPacket DIED");
