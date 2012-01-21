@@ -49,11 +49,14 @@ public class Visibility {
 
         final List<Player> players = new ArrayList<Player>();
         final boolean hidingVanished = (searcher != null) && VanishPerms.canSeeAll(searcher);
-        for (final Player p : J2MC_Manager.getCore().getServer().getOnlinePlayers()) {
+        for (final Player player : J2MC_Manager.getCore().getServer().getOnlinePlayers()) {
             try {
-                if (!hidingVanished || !VanishNoPacket.isVanished(p.getName())) {
-                    if (p.getName().toLowerCase().contains(target.toLowerCase())) {
-                        players.add(p);
+                if (!hidingVanished || !VanishNoPacket.isVanished(player.getName())) {
+                    if (player.getName().toLowerCase().contains(target.toLowerCase())) {
+                        players.add(player);
+                    }
+                    if(player.getName().equalsIgnoreCase(target)){
+                        return player;
                     }
                 }
             } catch (final VanishNotLoadedException e) {
