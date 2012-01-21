@@ -1,15 +1,22 @@
 package to.joe.j2mc.core.permissions;
 
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.util.HashMap;
 import java.util.HashSet;
 
 import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
+import org.bukkit.event.Listener;
+import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.permissions.PermissionAttachment;
 
 import to.joe.j2mc.core.J2MC_Core;
 import to.joe.j2mc.core.J2MC_Manager;
 
-public class Permissions {
+public class Permissions implements Listener {
 
     private final J2MC_Core plugin;
 
@@ -22,16 +29,19 @@ public class Permissions {
      */
 
     /*
+     * groups: default, admin, srstaff
+     */
+
+    /*
      * MySQL tables
      * users
      *  user_name
-     *  group_id
-     *  user_flags
+     *  group
+     *  flags
      * groups
-     *  group_id
+     *  name
      *  server_id
-     *  group_name
-     *  group_flags
+     *  flags
      * permissions
      *  permission
      *  flag
@@ -39,58 +49,137 @@ public class Permissions {
      */
 
     private final HashMap<Character, HashSet<String>> permissions;
-    private final HashSet<Character> authenticationFlags;
     private final HashMap<String, PermissionAttachment> attachments;
     private final HashMap<String, HashSet<Character>> playerFlags;
+    private final HashMap<String, HashSet<Character>> groupFlags;
+    private final HashMap<String, String> playerGroup;
     private final HashSet<String> authenticated;
 
-    public Permissions(J2MC_Core plugin, HashSet<Character> authenticationFlags) {
+    public Permissions(J2MC_Core plugin) {
         this.plugin = plugin;
-        this.authenticationFlags = authenticationFlags;
         this.permissions = new HashMap<Character, HashSet<String>>();
         this.authenticated = new HashSet<String>();
         this.attachments = new HashMap<String, PermissionAttachment>();
         this.playerFlags = new HashMap<String, HashSet<Character>>();
+        this.groupFlags = new HashMap<String, HashSet<Character>>();
+        this.playerGroup = new HashMap<String, String>();
+        try {
+            final PreparedStatement statement = J2MC_Manager.getMySQL().getFreshPreparedStatementHotFromTheOven("SELECT `name`,`flags` FROM `groups` WHERE `server_id`=?");
+            statement.setInt(0, J2MC_Manager.getServerID());
+            final ResultSet result = statement.executeQuery();
+            while (result.next()) {
+                final String flagList = result.getString("flags");
+                final HashSet<Character> flags = new HashSet<Character>();
+                for (final char flag : flagList.toCharArray()) {
+                    flags.add(flag);
+                }
+                this.groupFlags.put(result.getString("name"), flags);
+            }
+            if (!this.groupFlags.containsKey("default")) {
+                throw new Exception();
+            }
+        } catch (final Exception e) {
+            plugin.buggerAll("Could not load SQL groups");
+        }
+        J2MC_Manager.getCore().getServer().getPluginManager().registerEvents(this, J2MC_Manager.getCore());
     }
 
-    public void addFlag(Player player, char flag, boolean persist) {
+    /**
+     * Temporarily add a flag to a player
+     * 
+     * @param player
+     * @param flag
+     */
+    public void addFlag(Player player, char flag) {
         this.playerFlags.get(player.getName()).add(flag);
         this.refreshPermissions(player);
-        if (persist) {
-            //TODO store in SQL
-        }
     }
 
-    public void delFlag(Player player, char flag, boolean persist) {
+    /**
+     * Remove a flag from a player, temporarily
+     * 
+     * @param player
+     * @param flag
+     */
+    public void delFlag(Player player, char flag) {
         this.playerFlags.get(player.getName()).remove(flag);
         this.refreshPermissions(player);
-        if (persist) {
-            //TODO store in SQL
-        }
     }
 
+    /**
+     * Is the admin authed?
+     * 
+     * @param player
+     * @return
+     */
     public boolean isAuthenticated(Player player) {
         return this.authenticated.contains(player.getName());
     }
 
-    public void playerJoin(Player player) {
+    /**
+     * Called when a player joins the game.
+     * Do not call this
+     * 
+     * @param player
+     */
+    @EventHandler(priority = EventPriority.LOWEST)
+    public void playerJoin(PlayerJoinEvent event) {
+        final Player player = event.getPlayer();
         final HashSet<Character> flags = new HashSet<Character>();
-        //TODO MySQL stuff
+        String group;
+        try {
+            final PreparedStatement userInfo = J2MC_Manager.getMySQL().getFreshPreparedStatementHotFromTheOven("SELECT `group`,`flags` FROM `users` WHERE `name`=?");
+            userInfo.setString(0, player.getName());
+            final ResultSet result = userInfo.executeQuery();
+            if (result.next()) {
+                group = result.getString("group");
+                final String flagList = result.getString("flags");
+                if (flagList != null) {
+                    for (final char flag : flagList.toCharArray()) {
+                        flags.add(flag);
+                    }
+                }
+            } else {
+                final PreparedStatement newPlayer = J2MC_Manager.getMySQL().getFreshPreparedStatementHotFromTheOven("INSERT INTO `users` (`name`) VALUES (?)");
+                newPlayer.setString(0, player.getName());
+                newPlayer.execute();
+                group = "default";
+            }
+        } catch (final Exception e) {
+            group = "default";
+        }
+
+        this.playerGroup.put(player.getName(), group);
         this.playerFlags.put(player.getName(), flags);
         this.refreshPermissions(player);
     }
 
-    public void playerQuit(Player player) {
+    /**
+     * Called when the player quits
+     * Do not call this.
+     * 
+     * @param player
+     */
+    @EventHandler(priority = EventPriority.HIGHEST)
+    public void playerQuit(PlayerQuitEvent event) {
+        final Player player = event.getPlayer();
         this.attachments.remove(player.getName());
         this.playerFlags.remove(player.getName());
     }
 
+    /**
+     * Player has authenticated
+     * 
+     * @param player
+     * @param authenticated
+     */
     public void setAuthenticated(Player player, boolean authenticated) {
         if (authenticated) {
             this.authenticated.add(player.getName());
         } else {
             this.authenticated.remove(player.getName());
         }
+        this.refreshPermissions(player);
     }
 
     /**
@@ -103,7 +192,7 @@ public class Permissions {
                 player.removeAttachment(this.attachments.get(playerName));
             }
         }
-        J2MC_Manager.getLog().info("Unloaded all permissions");
+        this.plugin.getLogger().info("Unloaded all permissions");
     }
 
     private void refreshPermissions(Player player) {
@@ -112,15 +201,25 @@ public class Permissions {
             player.removeAttachment(this.attachments.remove(name));
         }
         final PermissionAttachment attachment = player.addAttachment(this.plugin);
-        this.attachments.put(name, attachment);
-        for (final Character flag : this.playerFlags.get(name)) {
-            if (this.authenticationFlags.contains(flag) && !this.isAuthenticated(player)) {
+
+        final HashSet<Character> flags = new HashSet<Character>();
+        flags.addAll(this.playerFlags.get(name));
+        String group = this.playerGroup.get(name);
+        if ((group.equals("admin") || group.equals("srstaff")) && this.isAuthenticated(player)) {
+            group = "default";
+        }
+        flags.addAll(this.groupFlags.get(group));
+        final HashSet<Character> completed = new HashSet<Character>();
+        for (final Character flag : flags) {
+            if (completed.contains(flag)) {
                 continue;
             }
+            completed.add(flag);
             for (final String permission : this.permissions.get(flag)) {
                 attachment.setPermission(permission, true);
             }
         }
+        this.attachments.put(name, attachment);
     }
 
 }

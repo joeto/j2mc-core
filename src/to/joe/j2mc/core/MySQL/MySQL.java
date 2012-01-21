@@ -1,8 +1,9 @@
 package to.joe.j2mc.core.MySQL;
 
-import java.sql.*;
-
-import to.joe.j2mc.core.exceptions.LostSQLConnectionException;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 
 public class MySQL {
 
@@ -16,24 +17,14 @@ public class MySQL {
         this.mySQLPassword = password;
     }
 
-    public void execute(PreparedStatement preparedStatement) throws SQLException, LostSQLConnectionException, ClassNotFoundException {
-        Connection connection = null;
-        connection = this.getConnection();
-        if (connection == null) {
-            throw new LostSQLConnectionException();
-        }
-        preparedStatement.execute();
-    }
-
-    public ResultSet executeQuery(PreparedStatement preparedStatement) throws SQLException, LostSQLConnectionException, ClassNotFoundException {
-        Connection connection = null;
-        connection = this.getConnection();
-        if (connection == null) {
-            throw new LostSQLConnectionException();
-        }
-        return preparedStatement.executeQuery();
-    }
-
+    /**
+     * Hot and ready for consumption
+     * 
+     * @param query
+     * @return
+     * @throws SQLException
+     * @throws ClassNotFoundException
+     */
     public PreparedStatement getFreshPreparedStatementHotFromTheOven(String query) throws SQLException, ClassNotFoundException {
         Connection connection = null;
         connection = this.getConnection();

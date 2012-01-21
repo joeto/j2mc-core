@@ -16,9 +16,6 @@ import to.joe.j2mc.core.exceptions.TooManyPlayersException;
 
 public class Visibility {
 
-    public Visibility() {
-    }
-
     /**
      * @param searcher
      *            set as null for accessing all players on server
@@ -33,8 +30,7 @@ public class Visibility {
                         players.remove(player);
                     }
                 } catch (final VanishNotLoadedException e) {
-                    J2MC_Manager.getLog().severe("VanishNoPacket DIED");
-                    J2MC_Manager.getCore().getServer().getPluginManager().disablePlugin(J2MC_Manager.getCore());
+                    J2MC_Manager.getCore().buggerAll("VanishNoPacket DIED");
                 }
             }
         }
@@ -56,13 +52,12 @@ public class Visibility {
         for (final Player p : J2MC_Manager.getCore().getServer().getOnlinePlayers()) {
             try {
                 if (!hidingVanished || !VanishNoPacket.isVanished(p.getName())) {
-                	if(p.getName().toLowerCase().contains(target.toLowerCase())){
-                		players.add(p);
-                	}
+                    if (p.getName().toLowerCase().contains(target.toLowerCase())) {
+                        players.add(p);
+                    }
                 }
             } catch (final VanishNotLoadedException e) {
-                J2MC_Manager.getLog().severe("VanishNoPacket DIED");
-                J2MC_Manager.getCore().getServer().getPluginManager().disablePlugin(J2MC_Manager.getCore());
+                J2MC_Manager.getCore().buggerAll("VanishNoPacket DIED");
             }
         }
         if (players.size() > 1) {
@@ -74,12 +69,17 @@ public class Visibility {
         return players.get(0);
     }
 
+    /**
+     * Is the player vanished?
+     * 
+     * @param player
+     * @return
+     */
     public boolean isVanished(Player player) {
         try {
             return VanishNoPacket.isVanished(player.getName());
         } catch (final VanishNotLoadedException e) {
-            J2MC_Manager.getLog().severe("VanishNoPacket DIED");
-            J2MC_Manager.getCore().getServer().getPluginManager().disablePlugin(J2MC_Manager.getCore());
+            J2MC_Manager.getCore().buggerAll("VanishNoPacket DIED");
         }
         return false;
     }
