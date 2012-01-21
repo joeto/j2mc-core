@@ -37,7 +37,7 @@ public class J2MC_Core extends JavaPlugin {
      * @param message
      */
     public void adminAndLog(String message) {
-        this.messageByPermission("j2mc.message.receive.admin", message);
+        this.getServer().broadcast(message, "j2mc.message.receive.admin");
         this.getLogger().info(message);
     }
 
@@ -73,12 +73,16 @@ public class J2MC_Core extends JavaPlugin {
      * @param permission
      * @param message
      */
-    public void messageByPermission(String permission, String message) {
+    public void messageByNoPermission(String message, String permission) {
         for (final Player player : this.getServer().getOnlinePlayers()) {
-            if ((player != null) && player.hasPermission(permission)) {
+            if ((player != null) && !player.hasPermission(permission)) {
                 player.sendMessage(message);
             }
         }
+    }
+
+    public void messageNonAdmin(String message) {
+        this.messageByNoPermission(message, "j2mc.message.receive.admin");
     }
 
     @Override
