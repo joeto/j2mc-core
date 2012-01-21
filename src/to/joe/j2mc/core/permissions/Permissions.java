@@ -222,4 +222,9 @@ public class Permissions implements Listener {
         this.attachments.put(name, attachment);
     }
 
+    public boolean isAdmin(String name) {
+        String group=this.playerGroup.get(name);
+        return group.equals("admin") || group.equals("srstaff");
+    }
+
 }
