@@ -65,7 +65,7 @@ public class Permissions implements Listener {
         this.playerGroup = new HashMap<String, String>();
         try {
             final PreparedStatement statement = J2MC_Manager.getMySQL().getFreshPreparedStatementHotFromTheOven("SELECT `name`,`flags` FROM `groups` WHERE `server_id`=?");
-            statement.setInt(0, J2MC_Manager.getServerID());
+            statement.setInt(1, J2MC_Manager.getServerID());
             final ResultSet result = statement.executeQuery();
             while (result.next()) {
                 final String flagList = result.getString("flags");
@@ -106,6 +106,11 @@ public class Permissions implements Listener {
         this.refreshPermissions(player);
     }
 
+    public boolean isAdmin(String name) {
+        final String group = this.playerGroup.get(name);
+        return group.equals("admin") || group.equals("srstaff");
+    }
+
     /**
      * Is the admin authed?
      * 
@@ -129,7 +134,7 @@ public class Permissions implements Listener {
         String group;
         try {
             final PreparedStatement userInfo = J2MC_Manager.getMySQL().getFreshPreparedStatementHotFromTheOven("SELECT `group`,`flags` FROM `users` WHERE `name`=?");
-            userInfo.setString(0, player.getName());
+            userInfo.setString(1, player.getName());
             final ResultSet result = userInfo.executeQuery();
             if (result.next()) {
                 group = result.getString("group");
@@ -141,7 +146,7 @@ public class Permissions implements Listener {
                 }
             } else {
                 final PreparedStatement newPlayer = J2MC_Manager.getMySQL().getFreshPreparedStatementHotFromTheOven("INSERT INTO `users` (`name`) VALUES (?)");
-                newPlayer.setString(0, player.getName());
+                newPlayer.setString(1, player.getName());
                 newPlayer.execute();
                 group = "default";
             }
@@ -220,11 +225,6 @@ public class Permissions implements Listener {
             }
         }
         this.attachments.put(name, attachment);
-    }
-
-    public boolean isAdmin(String name) {
-        String group=this.playerGroup.get(name);
-        return group.equals("admin") || group.equals("srstaff");
     }
 
 }
