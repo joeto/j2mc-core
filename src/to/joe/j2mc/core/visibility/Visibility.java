@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.kitteh.vanish.VanishPerms;
 import org.kitteh.vanish.staticaccess.VanishNoPacket;
@@ -45,17 +46,17 @@ public class Visibility {
      * @throws TooManyPlayersException
      * @throws NoPlayersException
      */
-    public Player getPlayer(String target, Player searcher) throws BadPlayerMatchException {
+    public Player getPlayer(String target, CommandSender searcher) throws BadPlayerMatchException {
 
         final List<Player> players = new ArrayList<Player>();
-        final boolean hidingVanished = (searcher != null) && VanishPerms.canSeeAll(searcher);
+        final boolean hidingVanished = (searcher != null) && (searcher instanceof Player) && !VanishPerms.canSeeAll((Player) searcher);
         for (final Player player : J2MC_Manager.getCore().getServer().getOnlinePlayers()) {
             try {
                 if (!hidingVanished || !VanishNoPacket.isVanished(player.getName())) {
                     if (player.getName().toLowerCase().contains(target.toLowerCase())) {
                         players.add(player);
                     }
-                    if(player.getName().equalsIgnoreCase(target)){
+                    if (player.getName().equalsIgnoreCase(target)) {
                         return player;
                     }
                 }
