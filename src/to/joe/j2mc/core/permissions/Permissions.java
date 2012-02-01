@@ -85,6 +85,22 @@ public class Permissions implements Listener {
     }
 
     /**
+     * Check if player has flag
+     * 
+     * @param player - Player to check
+     * @param flag - Flag to check
+     * 
+     * @return Returns true if player has flag, returns false if doesn't.
+     */
+    public boolean hasFlag(Player player, char flag){
+    	if(this.playerFlags.get(player.getName()).contains(flag)){
+    		return true;
+    	}else{
+    		return false;
+    	}
+    }
+    
+    /**
      * Temporarily add a flag to a player
      * 
      * @param player
