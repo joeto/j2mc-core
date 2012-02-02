@@ -92,8 +92,8 @@ public class Permissions implements Listener {
      * 
      * @return Returns true if player has flag, returns false if doesn't.
      */
-    public boolean hasFlag(Player player, char flag){
-    	if(this.playerFlags.get(player.getName()).contains(flag)){
+    public boolean hasFlag(String player, char flag){
+    	if(this.playerFlags.get(player).contains(flag)){
     		return true;
     	}else{
     		return false;
