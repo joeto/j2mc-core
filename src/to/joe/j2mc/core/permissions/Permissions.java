@@ -87,19 +87,21 @@ public class Permissions implements Listener {
     /**
      * Check if player has flag
      * 
-     * @param player - Player to check
-     * @param flag - Flag to check
+     * @param player
+     *            - Player to check
+     * @param flag
+     *            - Flag to check
      * 
      * @return Returns true if player has flag, returns false if doesn't.
      */
-    public boolean hasFlag(String player, char flag){
-    	if(this.playerFlags.get(player).contains(flag)){
-    		return true;
-    	}else{
-    		return false;
-    	}
+    public boolean hasFlag(String player, char flag) {
+        if (this.playerFlags.get(player).contains(flag)) {
+            return true;
+        } else {
+            return false;
+        }
     }
-    
+
     /**
      * Temporarily add a flag to a player
      * 
@@ -236,8 +238,10 @@ public class Permissions implements Listener {
                 continue;
             }
             completed.add(flag);
-            for (final String permission : this.permissions.get(flag)) {
-                attachment.setPermission(permission, true);
+            if (this.permissions.containsKey(flag)) {
+                for (final String permission : this.permissions.get(flag)) {
+                    attachment.setPermission(permission, true);
+                }
             }
         }
         this.attachments.put(name, attachment);
