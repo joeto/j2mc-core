@@ -4,6 +4,7 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.sql.Statement;
 
 public class MySQL {
 
@@ -30,6 +31,21 @@ public class MySQL {
         connection = this.getConnection();
         final PreparedStatement preparedStatement = connection.prepareStatement(query);
         return preparedStatement;
+    }
+    
+    /**
+     * Delicious PreparedStatements but with a generate keys attached!
+     * 
+     * @param query
+     * @return
+     * @throws SQLException
+     * @throws ClassNotFoundException
+     */
+    public PreparedStatement getFreshPreparedStatementWithGeneratedKeys(String query) throws SQLException, ClassNotFoundException{
+    	Connection conn = null;
+    	conn = this.getConnection();
+    	final PreparedStatement ps = conn.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
+    	return ps;
     }
 
     private Connection getConnection() throws ClassNotFoundException, SQLException {
