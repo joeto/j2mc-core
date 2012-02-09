@@ -94,7 +94,6 @@ public class J2MC_Core extends JavaPlugin {
     @Override
     public void onEnable() {
         J2MC_Manager.getInstance().setCore(this);
-
         final String mySQLUsername = this.getConfig().getString("MySQL.username");
         if (mySQLUsername == null) {
             this.buggerAll("Config is empty. I repeat, config is derp");
