@@ -5,27 +5,41 @@ import java.util.HashSet;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 
-public class IRCMessageEvent extends Event {
+public class MessageEvent extends Event {
 
     private static final long serialVersionUID = 1L;
     private static final HandlerList handlers = new HandlerList();
 
+    /**
+     * Return a HashSet of Strings submitted
+     * 
+     * @param strings
+     * @return
+     */
+    public static HashSet<String> compile(String... strings) {
+        final HashSet<String> set = new HashSet<String>();
+        for (final String string : strings) {
+            set.add(string);
+        }
+        return set;
+    }
+
     public static HandlerList getHandlerList() {
-        return IRCMessageEvent.handlers;
+        return MessageEvent.handlers;
     }
 
     private final HashSet<String> targets;
 
     private final String message;
 
-    public IRCMessageEvent(HashSet<String> targets, String message) {
+    public MessageEvent(HashSet<String> targets, String message) {
         this.targets = targets;
         this.message = message;
     }
 
     @Override
     public HandlerList getHandlers() {
-        return IRCMessageEvent.handlers;
+        return MessageEvent.handlers;
     }
 
     /**
@@ -53,7 +67,7 @@ public class IRCMessageEvent extends Event {
      * @param targets
      * @return
      */
-    public boolean targetting(String[] targets) {
+    public boolean targetting(String... targets) {
         for (final String target : targets) {
             if (this.targets.contains(target)) {
                 return true;
