@@ -10,6 +10,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.event.player.PlayerPreLoginEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.permissions.PermissionAttachment;
 
@@ -140,19 +141,19 @@ public class Permissions implements Listener {
     }
 
     /**
-     * Called when a player joins the game.
+     * Called before a player joins the game.
      * Do not call this
      * 
      * @param player
      */
     @EventHandler(priority = EventPriority.LOWEST)
-    public void playerJoin(PlayerJoinEvent event) {
-        final Player player = event.getPlayer();
+    public void playerPreLogin(PlayerPreLoginEvent event){
+        final String player = event.getName();
         final HashSet<Character> flags = new HashSet<Character>();
         String group;
         try {
             final PreparedStatement userInfo = J2MC_Manager.getMySQL().getFreshPreparedStatementHotFromTheOven("SELECT `group`,`flags` FROM `users` WHERE `name`=?");
-            userInfo.setString(1, player.getName());
+            userInfo.setString(1, player);
             final ResultSet result = userInfo.executeQuery();
             if (result.next()) {
                 group = result.getString("group");
@@ -164,7 +165,7 @@ public class Permissions implements Listener {
                 }
             } else {
                 final PreparedStatement newPlayer = J2MC_Manager.getMySQL().getFreshPreparedStatementHotFromTheOven("INSERT INTO `users` (`name`) VALUES (?)");
-                newPlayer.setString(1, player.getName());
+                newPlayer.setString(1, player);
                 newPlayer.execute();
                 group = "default";
             }
@@ -172,9 +173,19 @@ public class Permissions implements Listener {
             group = "default";
         }
 
-        this.playerGroup.put(player.getName(), group);
-        this.playerFlags.put(player.getName(), flags);
-        this.refreshPermissions(player);
+        this.playerGroup.put(player, group);
+        this.playerFlags.put(player, flags);
+    }
+    
+    /**
+     * Called when a player joins the game.
+     * Do not call this
+     * 
+     * @param player
+     */
+    @EventHandler(priority = EventPriority.LOWEST)
+    public void playerJoin(PlayerJoinEvent event) {
+        this.refreshPermissions(event.getPlayer());
     }
 
     /**
