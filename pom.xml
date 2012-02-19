@@ -5,7 +5,7 @@
   <artifactId>j2mc-core</artifactId>
   <packaging>jar</packaging>
   <version>1.0-SNAPSHOT</version>
-  <name>CraftIRC</name>
+  <name>j2mc-core</name>
   <url>http://www.github.com/joeto/j2mc-core</url>
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -13,7 +13,7 @@
   <scm>
     <connection>scm:git:git://github.com/joeto/j2mc-core/j2mc-core.git</connection>
     <developerConnection>scm:git:ssh://git@github.com/joeto/j2mc-core/j2mc-core.git</developerConnection>
-    <url>s://www.github.com/animosity/CraftIRC</url>
+    <url>s://www.github.com/joeto/j2mc-core</url>
   </scm>
   <repositories>
     <repository>
