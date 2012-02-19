@@ -155,7 +155,6 @@ public class Permissions implements Listener {
             final PreparedStatement userInfo = J2MC_Manager.getMySQL().getFreshPreparedStatementHotFromTheOven("SELECT `group`,`flags` FROM `users` WHERE `name`=?");
             userInfo.setString(1, player);
             final ResultSet result = userInfo.executeQuery();
-            plugin.getLogger().info("Bool state: " + result.next());
             if (result.next()) {
                 group = result.getString("group");
                 final String flagList = result.getString("flags");
