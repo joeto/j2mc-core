@@ -62,3 +62,18 @@ CREATE TABLE IF NOT EXISTS `users` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `name` (`name`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=2 ;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `perms`
+--
+
+CREATE TABLE IF NOT EXISTS `perms` (
+`server_id` tinyint(4) NOT NULL,
+  `permission` varchar(255) NOT NULL,
+  `flag` char(1) NOT NULL,
+  PRIMARY KEY (`server_id`),
+  KEY `permission` (`permission`,`flag`,`server_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
