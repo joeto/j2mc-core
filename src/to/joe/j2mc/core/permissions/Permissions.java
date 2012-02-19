@@ -49,7 +49,7 @@ public class Permissions implements Listener {
      * 
      */
 
-    private final HashMap<Character, HashSet<String>> permissions;
+    private final HashMap<Character, String> permissions;
     private final HashMap<String, PermissionAttachment> attachments;
     private final HashMap<String, HashSet<Character>> playerFlags;
     private final HashMap<String, HashSet<Character>> groupFlags;
@@ -58,7 +58,7 @@ public class Permissions implements Listener {
 
     public Permissions(J2MC_Core plugin) {
         this.plugin = plugin;
-        this.permissions = new HashMap<Character, HashSet<String>>();
+        this.permissions = new HashMap<Character, String>();
         this.authenticated = new HashSet<String>();
         this.attachments = new HashMap<String, PermissionAttachment>();
         this.playerFlags = new HashMap<String, HashSet<Character>>();
@@ -79,7 +79,18 @@ public class Permissions implements Listener {
             if (!this.groupFlags.containsKey("default")) {
                 throw new Exception();
             }
+           plugin.getLogger().info("About to read permissions");
+            final PreparedStatement readPermissions = J2MC_Manager.getMySQL().getFreshPreparedStatementHotFromTheOven("SELECT `permission`, `flag` FROM `perms` WHERE `server_id`=?");
+            readPermissions.setInt(1, J2MC_Manager.getServerID());
+            ResultSet readPermissionsResult = readPermissions.executeQuery();
+            while(readPermissionsResult.next()){
+            	final String permission = readPermissionsResult.getString("permission");
+            	String flagString = readPermissionsResult.getString("flag");
+            	char flag = flagString.toCharArray()[0];
+            	this.permissions.put(flag, permission);
+            }
         } catch (final Exception e) {
+        	e.printStackTrace();
             plugin.buggerAll("Could not load SQL groups");
         }
         J2MC_Manager.getCore().getServer().getPluginManager().registerEvents(this, J2MC_Manager.getCore());
@@ -252,9 +263,8 @@ public class Permissions implements Listener {
             }
             completed.add(flag);
             if (this.permissions.containsKey(flag)) {
-                for (final String permission : this.permissions.get(flag)) {
-                    attachment.setPermission(permission, true);
-                }
+                final String permission = this.permissions.get(flag);
+                attachment.setPermission(permission, true);
             }
         }
         this.attachments.put(name, attachment);
