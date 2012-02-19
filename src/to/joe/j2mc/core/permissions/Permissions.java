@@ -79,7 +79,6 @@ public class Permissions implements Listener {
             if (!this.groupFlags.containsKey("default")) {
                 throw new Exception();
             }
-           plugin.getLogger().info("About to read permissions");
             final PreparedStatement readPermissions = J2MC_Manager.getMySQL().getFreshPreparedStatementHotFromTheOven("SELECT `permission`, `flag` FROM `perms` WHERE `server_id`=?");
             readPermissions.setInt(1, J2MC_Manager.getServerID());
             ResultSet readPermissionsResult = readPermissions.executeQuery();
