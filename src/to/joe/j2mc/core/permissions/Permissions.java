@@ -251,6 +251,7 @@ public class Permissions implements Listener {
         final HashSet<Character> flags = new HashSet<Character>();
         flags.addAll(this.playerFlags.get(name));
         String group = this.playerGroup.get(name);
+        flags.addAll(this.groupFlags.get(group));
         if ((group.equals("admin") || group.equals("srstaff")) && this.isAuthenticated(player)) {
             group = "default";
         }
