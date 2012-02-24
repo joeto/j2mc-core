@@ -59,9 +59,10 @@ CREATE TABLE IF NOT EXISTS `users` (
   `name` varchar(60) NOT NULL,
   `group` varchar(16) NOT NULL,
   `flags` varchar(26) NOT NULL,
+  `IRChost` varchar(80) NOT NULL DEFAULT '',
   PRIMARY KEY (`id`),
   UNIQUE KEY `name` (`name`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=2 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=4 ;
 
 -- --------------------------------------------------------
 
