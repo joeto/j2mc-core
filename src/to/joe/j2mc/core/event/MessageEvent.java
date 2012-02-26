@@ -75,5 +75,14 @@ public class MessageEvent extends Event {
         }
         return false;
     }
+    
+    /**
+     * Returns all targets
+     * 
+     */
+    
+    public HashSet<String> alltargets(){
+    	return this.targets;
+    }
 
 }
