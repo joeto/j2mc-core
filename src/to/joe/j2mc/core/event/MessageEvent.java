@@ -7,7 +7,6 @@ import org.bukkit.event.HandlerList;
 
 public class MessageEvent extends Event {
 
-    private static final long serialVersionUID = 1L;
     private static final HandlerList handlers = new HandlerList();
 
     /**
