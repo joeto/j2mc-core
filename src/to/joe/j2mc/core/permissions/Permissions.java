@@ -54,12 +54,10 @@ public class Permissions implements Listener {
     private final HashMap<String, HashSet<Character>> playerFlags;
     private final HashMap<String, HashSet<Character>> groupFlags;
     private final HashMap<String, String> playerGroup;
-    private final HashSet<String> authenticated;
 
     public Permissions(J2MC_Core plugin) {
         this.plugin = plugin;
         this.permissions = new HashMap<Character, String>();
-        this.authenticated = new HashSet<String>();
         this.attachments = new HashMap<String, PermissionAttachment>();
         this.playerFlags = new HashMap<String, HashSet<Character>>();
         this.groupFlags = new HashMap<String, HashSet<Character>>();
@@ -141,16 +139,6 @@ public class Permissions implements Listener {
     }
 
     /**
-     * Is the admin authed?
-     * 
-     * @param player
-     * @return
-     */
-    public boolean isAuthenticated(Player player) {
-        return this.authenticated.contains(player.getName());
-    }
-
-    /**
      * Called before a player joins the game.
      * Do not call this
      * 
@@ -214,21 +202,6 @@ public class Permissions implements Listener {
     }
 
     /**
-     * Player has authenticated
-     * 
-     * @param player
-     * @param authenticated
-     */
-    public void setAuthenticated(Player player, boolean authenticated) {
-        if (authenticated) {
-            this.authenticated.add(player.getName());
-        } else {
-            this.authenticated.remove(player.getName());
-        }
-        this.refreshPermissions(player);
-    }
-
-    /**
      * GOOD GOD MAN, call this before replacing this class or shutting down
      */
     public void shutdown() {
@@ -252,9 +225,6 @@ public class Permissions implements Listener {
         flags.addAll(this.playerFlags.get(name));
         String group = this.playerGroup.get(name);
         flags.addAll(this.groupFlags.get(group));
-        if ((group.equals("admin") || group.equals("srstaff")) && this.isAuthenticated(player)) {
-            group = "default";
-        }
         flags.addAll(this.groupFlags.get(group));
         final HashSet<Character> completed = new HashSet<Character>();
         for (final Character flag : flags) {
