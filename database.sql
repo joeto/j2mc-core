@@ -2,6 +2,22 @@ SET SQL_MODE="NO_AUTO_VALUE_ON_ZERO";
 -- OMG LOL DATABASE STRUCTUREEEEESSS :D
 -- --------------------------------------------------------
 
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `alias`
+--
+
+CREATE TABLE IF NOT EXISTS `alias` (
+  `Name` varchar(64) NOT NULL,
+  `IP` varchar(64) NOT NULL,
+  `Time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `Logins` int(11) NOT NULL,
+  KEY `Name` (`Name`),
+  KEY `IP` (`IP`)
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+
+-- --------------------------------------------------------
 --
 -- Table structure for table `j2bans`
 --
