@@ -79,15 +79,15 @@ public class Permissions implements Listener {
             }
             final PreparedStatement readPermissions = J2MC_Manager.getMySQL().getFreshPreparedStatementHotFromTheOven("SELECT `permission`, `flag` FROM `perms` WHERE `server_id`=?");
             readPermissions.setInt(1, J2MC_Manager.getServerID());
-            ResultSet readPermissionsResult = readPermissions.executeQuery();
-            while(readPermissionsResult.next()){
-            	final String permission = readPermissionsResult.getString("permission");
-            	String flagString = readPermissionsResult.getString("flag");
-            	char flag = flagString.toCharArray()[0];
-            	this.permissions.put(flag, permission);
+            final ResultSet readPermissionsResult = readPermissions.executeQuery();
+            while (readPermissionsResult.next()) {
+                final String permission = readPermissionsResult.getString("permission");
+                final String flagString = readPermissionsResult.getString("flag");
+                final char flag = flagString.toCharArray()[0];
+                this.permissions.put(flag, permission);
             }
         } catch (final Exception e) {
-        	e.printStackTrace();
+            e.printStackTrace();
             plugin.buggerAll("Could not load SQL groups");
         }
         J2MC_Manager.getCore().getServer().getPluginManager().registerEvents(this, J2MC_Manager.getCore());
@@ -139,13 +139,24 @@ public class Permissions implements Listener {
     }
 
     /**
+     * Called when a player joins the game.
+     * Do not call this
+     * 
+     * @param player
+     */
+    @EventHandler(priority = EventPriority.LOWEST)
+    public void playerJoin(PlayerJoinEvent event) {
+        this.refreshPermissions(event.getPlayer());
+    }
+
+    /**
      * Called before a player joins the game.
      * Do not call this
      * 
      * @param player
      */
     @EventHandler(priority = EventPriority.LOWEST)
-    public void playerPreLogin(PlayerPreLoginEvent event){
+    public void playerPreLogin(PlayerPreLoginEvent event) {
         final String player = event.getName();
         final HashSet<Character> flags = new HashSet<Character>();
         String group;
@@ -175,17 +186,6 @@ public class Permissions implements Listener {
 
         this.playerGroup.put(player, group);
         this.playerFlags.put(player, flags);
-    }
-    
-    /**
-     * Called when a player joins the game.
-     * Do not call this
-     * 
-     * @param player
-     */
-    @EventHandler(priority = EventPriority.LOWEST)
-    public void playerJoin(PlayerJoinEvent event) {
-        this.refreshPermissions(event.getPlayer());
     }
 
     /**
@@ -223,7 +223,7 @@ public class Permissions implements Listener {
 
         final HashSet<Character> flags = new HashSet<Character>();
         flags.addAll(this.playerFlags.get(name));
-        String group = this.playerGroup.get(name);
+        final String group = this.playerGroup.get(name);
         flags.addAll(this.groupFlags.get(group));
         flags.addAll(this.groupFlags.get(group));
         final HashSet<Character> completed = new HashSet<Character>();

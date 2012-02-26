@@ -36,6 +36,15 @@ public class MessageEvent extends Event {
         this.message = message;
     }
 
+    /**
+     * Returns all targets
+     * 
+     */
+
+    public HashSet<String> alltargets() {
+        return this.targets;
+    }
+
     @Override
     public HandlerList getHandlers() {
         return MessageEvent.handlers;
@@ -73,15 +82,6 @@ public class MessageEvent extends Event {
             }
         }
         return false;
-    }
-    
-    /**
-     * Returns all targets
-     * 
-     */
-    
-    public HashSet<String> alltargets(){
-    	return this.targets;
     }
 
 }
