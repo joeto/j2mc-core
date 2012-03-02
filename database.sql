@@ -95,3 +95,13 @@ CREATE TABLE IF NOT EXISTS `perms` (
   KEY `permission` (`permission`,`flag`,`server_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
+--
+-- Table structure for table `groups`
+--
+
+CREATE TABLE IF NOT EXISTS `groups` (
+  `name` varchar(64) NOT NULL,
+  `flags` varchar(64) NOT NULL,
+  `server_id` int(1) NOT NULL
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+
