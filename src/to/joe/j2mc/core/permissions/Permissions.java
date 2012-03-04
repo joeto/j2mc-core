@@ -26,6 +26,7 @@ public class Permissions implements Listener {
      * 
      * p - teleport protection
      * t - trusted
+     * d - donator
      * 
      */
 
