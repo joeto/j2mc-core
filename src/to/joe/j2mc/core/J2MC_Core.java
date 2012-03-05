@@ -7,6 +7,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.kitteh.vanish.staticaccess.VanishNoPacket;
 
 import to.joe.j2mc.core.MySQL.MySQL;
+import to.joe.j2mc.core.log.CommandLogger;
 import to.joe.j2mc.core.permissions.Permissions;
 import to.joe.j2mc.core.visibility.Visibility;
 
@@ -107,7 +108,7 @@ public class J2MC_Core extends JavaPlugin {
         J2MC_Manager.getInstance().setPermissions(new Permissions(this));
 
         J2MC_Manager.getInstance().setVisibility(new Visibility());
-
+        this.getServer().getPluginManager().registerEvents(new CommandLogger(this), this);
         this.getServer().getScheduler().scheduleSyncDelayedTask(this, new Runnable() {
             @Override
             public void run() {
