@@ -95,6 +95,9 @@ CREATE TABLE IF NOT EXISTS `perms` (
   KEY `permission` (`permission`,`flag`,`server_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
+-- --------------------------------------------------------
+
+
 --
 -- Table structure for table `groups`
 --
@@ -105,3 +108,20 @@ CREATE TABLE IF NOT EXISTS `groups` (
   `server_id` int(1) NOT NULL
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `teleport`
+--
+
+CREATE TABLE IF NOT EXISTS `teleport` (
+  `server_id` tinyint(1) NOT NULL,
+  `warp_name` varchar(32) NOT NULL,
+  `owner` varchar(16) NOT NULL,
+  `world` varchar(32) NOT NULL,
+  `x` double NOT NULL,
+  `y` double NOT NULL,
+  `z` double NOT NULL,
+  `pitch` float NOT NULL,
+  `yaw` float NOT NULL
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
