@@ -5,3 +5,7 @@ load: STARTUP
 website: http://forums.joe.to
 author: J2 Minecraft Plugin Team
 description: Core.
+permissions:
+  j2mc.message.receive.admin:
+    default: op
+    description: nyan
