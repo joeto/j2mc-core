@@ -225,8 +225,9 @@ public class Permissions implements Listener {
         final HashSet<Character> flags = new HashSet<Character>();
         flags.addAll(this.playerFlags.get(name));
         final String group = this.playerGroup.get(name);
-        flags.addAll(this.groupFlags.get(group));
-        flags.addAll(this.groupFlags.get(group));
+        if(this.groupFlags.get(group) != null){
+            flags.addAll(this.groupFlags.get(group));
+        }
         final HashSet<Character> completed = new HashSet<Character>();
         for (final Character flag : flags) {
             if (completed.contains(flag)) {
