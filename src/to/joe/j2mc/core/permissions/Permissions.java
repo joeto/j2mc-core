@@ -2,6 +2,7 @@ package to.joe.j2mc.core.permissions;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.HashSet;
 
@@ -32,22 +33,6 @@ public class Permissions implements Listener {
 
     /*
      * groups: default, admin, srstaff
-     */
-
-    /*
-     * MySQL tables
-     * users
-     *  user_name
-     *  group
-     *  flags
-     * groups
-     *  name
-     *  server_id
-     *  flags
-     * permissions
-     *  permission
-     *  flag
-     * 
      */
 
     private final HashMap<Character, String> permissions;
@@ -92,6 +77,57 @@ public class Permissions implements Listener {
             plugin.buggerAll("Could not load SQL groups");
         }
         J2MC_Manager.getCore().getServer().getPluginManager().registerEvents(this, J2MC_Manager.getCore());
+    }
+    
+    /**
+     * Add a permenant flag to a player
+     * 
+     * @param player
+     * @param flag
+     */
+    public void addPermanentFlag(Player player, char flag){
+        HashSet<Character> newFlags = this.playerFlags.get(player);
+        newFlags.add(flag);
+        this.playerFlags.put(player.getName(), newFlags);
+        String toAdd = "";
+        for(char derp : this.playerFlags.get(player)){
+            toAdd += derp;
+        }
+        try {
+            PreparedStatement ps = J2MC_Manager.getMySQL().getFreshPreparedStatementHotFromTheOven("UPDATE `users` SET flags=? WHERE name=?");
+            ps.setString(1, toAdd);
+            ps.setString(2, player.getName());
+            ps.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+        this.refreshPermissions(player);
+    }
+    
+    /**
+     * Add a permenant flag to a player (use for offline players)
+     * 
+     * @param player
+     * @param flag
+     */
+    public void addPermanentFlag(String player, char flag) {
+        try {
+            PreparedStatement grab = J2MC_Manager.getMySQL().getFreshPreparedStatementHotFromTheOven("SELECT `flags` FROM `users` WHERE name=?");
+            grab.setString(1, player);
+            ResultSet rs = grab.executeQuery();
+            rs.next();
+            String toAdd = rs.getString("flags") + flag;
+            PreparedStatement ps = J2MC_Manager.getMySQL().getFreshPreparedStatementHotFromTheOven("UPDATE `users` SET flags=? WHERE name=?");
+            ps.setString(1, toAdd);
+            ps.setString(2, player);
+            ps.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
     }
 
     /**
