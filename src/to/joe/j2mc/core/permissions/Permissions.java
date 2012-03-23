@@ -36,7 +36,7 @@ public class Permissions implements Listener {
      * groups: default, admin, srstaff
      */
 
-    private final HashMap<Character, String> permissions;
+    private final HashMap<Character, HashSet<String>> permissions;
     private final HashMap<String, PermissionAttachment> attachments;
     private final HashMap<String, HashSet<Character>> playerFlags;
     private final HashMap<String, HashSet<Character>> groupFlags;
@@ -44,7 +44,7 @@ public class Permissions implements Listener {
 
     public Permissions(J2MC_Core plugin) {
         this.plugin = plugin;
-        this.permissions = new HashMap<Character, String>();
+        this.permissions = new HashMap<Character, HashSet<String>>();
         this.attachments = new HashMap<String, PermissionAttachment>();
         this.playerFlags = new HashMap<String, HashSet<Character>>();
         this.groupFlags = new HashMap<String, HashSet<Character>>();
@@ -73,7 +73,10 @@ public class Permissions implements Listener {
                 final String permission = readPermissionsResult.getString("permission");
                 final String flagString = readPermissionsResult.getString("flag");
                 final char flag = flagString.toCharArray()[0];
-                this.permissions.put(flag, permission);
+                if(!this.permissions.containsKey("flag")){
+                    this.permissions.put(flag, new HashSet<String>());
+                } 
+                this.permissions.get("flag").add(permission);
                 Debug.log(flag+" "+permission);
             }
         } catch (final Exception e) {
@@ -272,9 +275,11 @@ public class Permissions implements Listener {
             }
             completed.add(flag);
             if (this.permissions.containsKey(flag)) {
-                final String permission = this.permissions.get(flag);
-                Debug.log("Node: "+permission);
-                attachment.setPermission(permission, true);
+                final HashSet<String> permissions = this.permissions.get(flag);
+                for(String permission:permissions){
+                    Debug.log("Node: "+permission);
+                    attachment.setPermission(permission, true);
+                }
             }
         }
         this.attachments.put(name, attachment);
