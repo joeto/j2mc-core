@@ -76,7 +76,7 @@ public class Permissions implements Listener {
                 if(!this.permissions.containsKey(flag)){
                     this.permissions.put(flag, new HashSet<String>());
                 } 
-                this.permissions.get("flag").add(permission);
+                this.permissions.get(flag).add(permission);
                 Debug.log(flag+" "+permission);
             }
         } catch (final Exception e) {
