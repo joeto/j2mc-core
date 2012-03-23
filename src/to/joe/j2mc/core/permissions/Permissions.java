@@ -216,6 +216,7 @@ public class Permissions implements Listener {
                 newPlayer.setString(3, "f");
                 newPlayer.executeUpdate();
                 group = "default";
+                flags.add('f');
             }
         } catch (final Exception e) {
             group = "default";
