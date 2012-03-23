@@ -59,7 +59,9 @@ public class Permissions implements Listener {
                 for (final char flag : flagList.toCharArray()) {
                     flags.add(flag);
                 }
-                this.groupFlags.put(result.getString("name"), flags);
+                String groupname=result.getString("name");
+                this.groupFlags.put(groupname, flags);
+                Debug.log(groupname+" "+flags);
             }
             if (!this.groupFlags.containsKey("default")) {
                 throw new Exception();
@@ -72,6 +74,7 @@ public class Permissions implements Listener {
                 final String flagString = readPermissionsResult.getString("flag");
                 final char flag = flagString.toCharArray()[0];
                 this.permissions.put(flag, permission);
+                Debug.log(flag+" "+permission);
             }
         } catch (final Exception e) {
             e.printStackTrace();
