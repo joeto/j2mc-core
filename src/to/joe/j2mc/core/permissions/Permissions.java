@@ -10,7 +10,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
-import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.event.player.PlayerLoginEvent;
 import org.bukkit.event.player.PlayerPreLoginEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.permissions.PermissionAttachment;
@@ -170,11 +170,6 @@ public class Permissions implements Listener {
         }
     }
 
-    public boolean isAdmin(String name) {
-        final String group = this.playerGroup.get(name);
-        return group.equals("admin") || group.equals("srstaff");
-    }
-
     /**
      * Called when a player joins the game.
      * Do not call this
@@ -182,7 +177,7 @@ public class Permissions implements Listener {
      * @param player
      */
     @EventHandler(priority = EventPriority.LOWEST)
-    public void playerJoin(PlayerJoinEvent event) {
+    public void playerLogin(PlayerLoginEvent event) {
         this.refreshPermissions(event.getPlayer());
     }
 

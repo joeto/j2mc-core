@@ -39,7 +39,7 @@ public class J2MC_Core extends JavaPlugin {
      */
     public void adminAndLog(String message) {
         for(Player player : this.getServer().getOnlinePlayers()){
-            if(player.hasPermission("j2mc.message.receive.admin")){
+            if(player.hasPermission("j2mc.core.message.admin")){
                 player.sendMessage(message);
             }
         }

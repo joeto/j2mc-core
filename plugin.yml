@@ -1,11 +1,11 @@
 name: J2MC_Core
 main: to.joe.j2mc.core.J2MC_Core
-version: 0.0prealpha
+version: 1.0
 load: STARTUP
 website: http://forums.joe.to
 author: J2 Minecraft Plugin Team
 description: Core.
 permissions:
-  j2mc.message.receive.admin:
+  j2mc.core.admin:
     default: op
-    description: nyan
+    description: is an admin
