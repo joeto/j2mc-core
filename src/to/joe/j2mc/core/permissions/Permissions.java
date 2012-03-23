@@ -73,7 +73,7 @@ public class Permissions implements Listener {
                 final String permission = readPermissionsResult.getString("permission");
                 final String flagString = readPermissionsResult.getString("flag");
                 final char flag = flagString.toCharArray()[0];
-                if(!this.permissions.containsKey("flag")){
+                if(!this.permissions.containsKey(flag)){
                     this.permissions.put(flag, new HashSet<String>());
                 } 
                 this.permissions.get("flag").add(permission);
