@@ -15,6 +15,7 @@ import org.bukkit.event.player.PlayerPreLoginEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.permissions.PermissionAttachment;
 
+import to.joe.j2mc.core.Debug;
 import to.joe.j2mc.core.J2MC_Core;
 import to.joe.j2mc.core.J2MC_Manager;
 
@@ -208,10 +209,9 @@ public class Permissions implements Listener {
                 final PreparedStatement newPlayer = J2MC_Manager.getMySQL().getFreshPreparedStatementHotFromTheOven("INSERT INTO `users` (`name`, `group`, `flags`) VALUES ( ?, ? , ?)");
                 newPlayer.setString(1, player);
                 newPlayer.setString(2, "default");
-                newPlayer.setString(3, "f");
+                newPlayer.setString(3, "");
                 newPlayer.executeUpdate();
                 group = "default";
-                flags.add('f');
             }
         } catch (final Exception e) {
             group = "default";
@@ -261,13 +261,16 @@ public class Permissions implements Listener {
             flags.addAll(this.groupFlags.get(group));
         }
         final HashSet<Character> completed = new HashSet<Character>();
+        Debug.log("Joining: "+player.getName());
         for (final Character flag : flags) {
+            Debug.log("Flag: "+flag);
             if (completed.contains(flag)) {
                 continue;
             }
             completed.add(flag);
             if (this.permissions.containsKey(flag)) {
                 final String permission = this.permissions.get(flag);
+                Debug.log("Node: "+permission);
                 attachment.setPermission(permission, true);
             }
         }
