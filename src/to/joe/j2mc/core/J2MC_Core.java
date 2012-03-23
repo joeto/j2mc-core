@@ -128,6 +128,8 @@ public class J2MC_Core extends JavaPlugin {
             }
 
         });
+        
+        Debug.enable(getConfig().getBoolean("debug", false));
     }
     
 }
