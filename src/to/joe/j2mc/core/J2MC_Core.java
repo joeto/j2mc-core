@@ -98,6 +98,7 @@ public class J2MC_Core extends JavaPlugin {
     @Override
     public void onEnable() {
         J2MC_Manager.getInstance().setCore(this);
+        Debug.enable(getConfig().getBoolean("debug", false));
         final String mySQLUsername = this.getConfig().getString("MySQL.username");
         if (mySQLUsername == null) {
             this.buggerAll("Config is empty. I repeat, config is derp");
@@ -128,8 +129,6 @@ public class J2MC_Core extends JavaPlugin {
             }
 
         });
-        
-        Debug.enable(getConfig().getBoolean("debug", false));
     }
     
 }
