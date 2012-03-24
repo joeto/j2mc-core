@@ -59,9 +59,9 @@ public class Permissions implements Listener {
                 for (final char flag : flagList.toCharArray()) {
                     flags.add(flag);
                 }
-                String groupname=result.getString("name");
+                final String groupname = result.getString("name");
                 this.groupFlags.put(groupname, flags);
-                Debug.log(groupname+" "+flags);
+                Debug.log(groupname + " " + flags);
             }
             if (!this.groupFlags.containsKey("default")) {
                 throw new Exception();
@@ -73,73 +73,22 @@ public class Permissions implements Listener {
                 final String permission = readPermissionsResult.getString("permission");
                 final String flagString = readPermissionsResult.getString("flag");
                 final char flag = flagString.toCharArray()[0];
-                if(!this.permissions.containsKey(flag)){
+                if (!this.permissions.containsKey(flag)) {
                     this.permissions.put(flag, new HashSet<String>());
-                } 
+                }
                 this.permissions.get(flag).add(permission);
-                Debug.log(flag+" "+permission);
+                Debug.log(flag + " " + permission);
             }
         } catch (final Exception e) {
             e.printStackTrace();
             plugin.buggerAll("Could not load SQL groups");
         }
         J2MC_Manager.getCore().getServer().getPluginManager().registerEvents(this, J2MC_Manager.getCore());
-        for(Player player: this.plugin.getServer().getOnlinePlayers()){
-            if(player!=null){
+        for (final Player player : this.plugin.getServer().getOnlinePlayers()) {
+            if (player != null) {
                 this.initializePlayerPermissions(player.getName());
                 this.refreshPermissions(player);
             }
-        }
-    }
-    
-    /**
-     * Add a permenant flag to a player
-     * 
-     * @param player
-     * @param flag
-     */
-    public void addPermanentFlag(Player player, char flag){
-        HashSet<Character> newFlags = this.playerFlags.get(player);
-        newFlags.add(flag);
-        this.playerFlags.put(player.getName(), newFlags);
-        String toAdd = "";
-        for(char derp : this.playerFlags.get(player)){
-            toAdd += derp;
-        }
-        try {
-            PreparedStatement ps = J2MC_Manager.getMySQL().getFreshPreparedStatementHotFromTheOven("UPDATE `users` SET flags=? WHERE name=?");
-            ps.setString(1, toAdd);
-            ps.setString(2, player.getName());
-            ps.executeUpdate();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        }
-        this.refreshPermissions(player);
-    }
-    
-    /**
-     * Add a permenant flag to a player (use for offline players)
-     * 
-     * @param player
-     * @param flag
-     */
-    public void addPermanentFlag(String player, char flag) {
-        try {
-            PreparedStatement grab = J2MC_Manager.getMySQL().getFreshPreparedStatementHotFromTheOven("SELECT `flags` FROM `users` WHERE name=?");
-            grab.setString(1, player);
-            ResultSet rs = grab.executeQuery();
-            rs.next();
-            String toAdd = rs.getString("flags") + flag;
-            PreparedStatement ps = J2MC_Manager.getMySQL().getFreshPreparedStatementHotFromTheOven("UPDATE `users` SET flags=? WHERE name=?");
-            ps.setString(1, toAdd);
-            ps.setString(2, player);
-            ps.executeUpdate();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
         }
     }
 
@@ -152,6 +101,57 @@ public class Permissions implements Listener {
     public void addFlag(Player player, char flag) {
         this.playerFlags.get(player.getName()).add(flag);
         this.refreshPermissions(player);
+    }
+
+    /**
+     * Add a permenant flag to a player
+     * 
+     * @param player
+     * @param flag
+     */
+    public void addPermanentFlag(Player player, char flag) {
+        final HashSet<Character> newFlags = this.playerFlags.get(player);
+        newFlags.add(flag);
+        this.playerFlags.put(player.getName(), newFlags);
+        String toAdd = "";
+        for (final char derp : this.playerFlags.get(player)) {
+            toAdd += derp;
+        }
+        try {
+            final PreparedStatement ps = J2MC_Manager.getMySQL().getFreshPreparedStatementHotFromTheOven("UPDATE `users` SET flags=? WHERE name=?");
+            ps.setString(1, toAdd);
+            ps.setString(2, player.getName());
+            ps.executeUpdate();
+        } catch (final SQLException e) {
+            e.printStackTrace();
+        } catch (final ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+        this.refreshPermissions(player);
+    }
+
+    /**
+     * Add a permenant flag to a player (use for offline players)
+     * 
+     * @param player
+     * @param flag
+     */
+    public void addPermanentFlag(String player, char flag) {
+        try {
+            final PreparedStatement grab = J2MC_Manager.getMySQL().getFreshPreparedStatementHotFromTheOven("SELECT `flags` FROM `users` WHERE name=?");
+            grab.setString(1, player);
+            final ResultSet rs = grab.executeQuery();
+            rs.next();
+            final String toAdd = rs.getString("flags") + flag;
+            final PreparedStatement ps = J2MC_Manager.getMySQL().getFreshPreparedStatementHotFromTheOven("UPDATE `users` SET flags=? WHERE name=?");
+            ps.setString(1, toAdd);
+            ps.setString(2, player);
+            ps.executeUpdate();
+        } catch (final SQLException e) {
+            e.printStackTrace();
+        } catch (final ClassNotFoundException e) {
+            e.printStackTrace();
+        }
     }
 
     /**
@@ -183,29 +183,7 @@ public class Permissions implements Listener {
         }
     }
 
-    /**
-     * Called when a player joins the game.
-     * Do not call this
-     * 
-     * @param player
-     */
-    @EventHandler(priority = EventPriority.LOWEST)
-    public void playerLogin(PlayerLoginEvent event) {
-        this.refreshPermissions(event.getPlayer());
-    }
-
-    /**
-     * Called before a player joins the game.
-     * Do not call this
-     * 
-     * @param player
-     */
-    @EventHandler(priority = EventPriority.LOWEST)
-    public void playerPreLogin(PlayerPreLoginEvent event) {
-        this.initializePlayerPermissions(event.getName());
-    }
-    
-    public void initializePlayerPermissions(String name){
+    public void initializePlayerPermissions(String name) {
         final HashSet<Character> flags = new HashSet<Character>();
         String group;
         try {
@@ -234,6 +212,28 @@ public class Permissions implements Listener {
 
         this.playerGroup.put(name, group);
         this.playerFlags.put(name, flags);
+    }
+
+    /**
+     * Called when a player joins the game.
+     * Do not call this
+     * 
+     * @param player
+     */
+    @EventHandler(priority = EventPriority.LOWEST)
+    public void playerLogin(PlayerLoginEvent event) {
+        this.refreshPermissions(event.getPlayer());
+    }
+
+    /**
+     * Called before a player joins the game.
+     * Do not call this
+     * 
+     * @param player
+     */
+    @EventHandler(priority = EventPriority.LOWEST)
+    public void playerPreLogin(PlayerPreLoginEvent event) {
+        this.initializePlayerPermissions(event.getName());
     }
 
     /**
@@ -272,21 +272,21 @@ public class Permissions implements Listener {
         final HashSet<Character> flags = new HashSet<Character>();
         flags.addAll(this.playerFlags.get(name));
         final String group = this.playerGroup.get(name);
-        if(this.groupFlags.get(group) != null){
+        if (this.groupFlags.get(group) != null) {
             flags.addAll(this.groupFlags.get(group));
         }
         final HashSet<Character> completed = new HashSet<Character>();
-        Debug.log("Joining: "+player.getName());
+        Debug.log("Joining: " + player.getName());
         for (final Character flag : flags) {
-            Debug.log("Flag: "+flag);
+            Debug.log("Flag: " + flag);
             if (completed.contains(flag)) {
                 continue;
             }
             completed.add(flag);
             if (this.permissions.containsKey(flag)) {
                 final HashSet<String> permissions = this.permissions.get(flag);
-                for(String permission:permissions){
-                    Debug.log("Node: "+permission);
+                for (final String permission : permissions) {
+                    Debug.log("Node: " + permission);
                     attachment.setPermission(permission, true);
                 }
             }

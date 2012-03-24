@@ -38,8 +38,8 @@ public class J2MC_Core extends JavaPlugin {
      * @param message
      */
     public void adminAndLog(String message) {
-        for(Player player : this.getServer().getOnlinePlayers()){
-            if(player.hasPermission("j2mc.core.admin")){
+        for (final Player player : this.getServer().getOnlinePlayers()) {
+            if (player.hasPermission("j2mc.core.admin")) {
                 player.sendMessage(message);
             }
         }
@@ -98,7 +98,7 @@ public class J2MC_Core extends JavaPlugin {
     @Override
     public void onEnable() {
         J2MC_Manager.getInstance().setCore(this);
-        Debug.enable(getConfig().getBoolean("debug", false));
+        Debug.enable(this.getConfig().getBoolean("debug", false));
         final String mySQLUsername = this.getConfig().getString("MySQL.username");
         if (mySQLUsername == null) {
             this.buggerAll("Config is empty. I repeat, config is derp");
@@ -130,5 +130,5 @@ public class J2MC_Core extends JavaPlugin {
 
         });
     }
-    
+
 }
