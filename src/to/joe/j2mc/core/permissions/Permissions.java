@@ -84,6 +84,12 @@ public class Permissions implements Listener {
             plugin.buggerAll("Could not load SQL groups");
         }
         J2MC_Manager.getCore().getServer().getPluginManager().registerEvents(this, J2MC_Manager.getCore());
+        for(Player player: this.plugin.getServer().getOnlinePlayers()){
+            if(player!=null){
+                this.initializePlayerPermissions(player.getName());
+                this.refreshPermissions(player);
+            }
+        }
     }
     
     /**
@@ -196,12 +202,15 @@ public class Permissions implements Listener {
      */
     @EventHandler(priority = EventPriority.LOWEST)
     public void playerPreLogin(PlayerPreLoginEvent event) {
-        final String player = event.getName();
+        this.initializePlayerPermissions(event.getName());
+    }
+    
+    public void initializePlayerPermissions(String name){
         final HashSet<Character> flags = new HashSet<Character>();
         String group;
         try {
             final PreparedStatement userInfo = J2MC_Manager.getMySQL().getFreshPreparedStatementHotFromTheOven("SELECT `group`,`flags` FROM `users` WHERE `name`=?");
-            userInfo.setString(1, player);
+            userInfo.setString(1, name);
             final ResultSet result = userInfo.executeQuery();
             if (result.next()) {
                 group = result.getString("group");
@@ -213,7 +222,7 @@ public class Permissions implements Listener {
                 }
             } else {
                 final PreparedStatement newPlayer = J2MC_Manager.getMySQL().getFreshPreparedStatementHotFromTheOven("INSERT INTO `users` (`name`, `group`, `flags`) VALUES ( ?, ? , ?)");
-                newPlayer.setString(1, player);
+                newPlayer.setString(1, name);
                 newPlayer.setString(2, "default");
                 newPlayer.setString(3, "");
                 newPlayer.executeUpdate();
@@ -223,8 +232,8 @@ public class Permissions implements Listener {
             group = "default";
         }
 
-        this.playerGroup.put(player, group);
-        this.playerFlags.put(player, flags);
+        this.playerGroup.put(name, group);
+        this.playerFlags.put(name, flags);
     }
 
     /**
