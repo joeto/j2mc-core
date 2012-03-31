@@ -8,6 +8,7 @@ import org.kitteh.vanish.staticaccess.VanishNoPacket;
 
 import to.joe.j2mc.core.MySQL.MySQL;
 import to.joe.j2mc.core.log.CommandLogger;
+import to.joe.j2mc.core.log.LogColors;
 import to.joe.j2mc.core.permissions.Permissions;
 import to.joe.j2mc.core.visibility.Visibility;
 
@@ -43,7 +44,7 @@ public class J2MC_Core extends JavaPlugin {
                 player.sendMessage(message);
             }
         }
-        this.getLogger().info(message);
+        this.getLogger().info(LogColors.process(message));
     }
 
     /**
