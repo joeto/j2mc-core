@@ -207,6 +207,7 @@ public class Permissions implements Listener {
                 group = "default";
             }
         } catch (final Exception e) {
+            e.printStackTrace();
             group = "default";
         }
 
