@@ -7,11 +7,14 @@ public class MySQL {
     private final String mySQLDatabase;
     private final String mySQLUsername;
     private final String mySQLPassword;
+    private Connection connection;
 
-    public MySQL(String database, String username, String password) {
+    public MySQL(String database, String username, String password) throws ClassNotFoundException, SQLException {
         this.mySQLDatabase = database;
         this.mySQLUsername = username;
         this.mySQLPassword = password;
+        Class.forName("com.mysql.jdbc.Driver");
+        connection = DriverManager.getConnection(this.mySQLDatabase + "?autoReconnect=true&user=" + this.mySQLUsername + "&password=" + this.mySQLPassword);
     }
 
     /**
@@ -23,8 +26,6 @@ public class MySQL {
      * @throws ClassNotFoundException
      */
     public PreparedStatement getFreshPreparedStatementHotFromTheOven(String query) throws SQLException, ClassNotFoundException {
-        Connection connection = null;
-        connection = this.getConnection();
         final PreparedStatement preparedStatement = connection.prepareStatement(query);
         return preparedStatement;
     }
@@ -38,14 +39,7 @@ public class MySQL {
      * @throws ClassNotFoundException
      */
     public PreparedStatement getFreshPreparedStatementWithGeneratedKeys(String query) throws SQLException, ClassNotFoundException {
-        Connection conn = null;
-        conn = this.getConnection();
-        final PreparedStatement ps = conn.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
+        final PreparedStatement ps = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
         return ps;
-    }
-
-    private Connection getConnection() throws ClassNotFoundException, SQLException {
-        Class.forName("com.mysql.jdbc.Driver");
-        return DriverManager.getConnection(this.mySQLDatabase + "?autoReconnect=true&user=" + this.mySQLUsername + "&password=" + this.mySQLPassword);
     }
 }

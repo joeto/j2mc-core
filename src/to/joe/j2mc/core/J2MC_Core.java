@@ -107,7 +107,11 @@ public class J2MC_Core extends JavaPlugin {
         }
         final String mySQLPassword = this.getConfig().getString("MySQL.password");
         final String mySQLDatabase = this.getConfig().getString("MySQL.database");
+        try{
         J2MC_Manager.getInstance().setMySQL(new MySQL(mySQLDatabase, mySQLUsername, mySQLPassword));
+        }catch(Exception e){
+            J2MC_Core.this.buggerAll("SQL failure");
+        }
 
         J2MC_Manager.getInstance().setServerID(this.getConfig().getInt("General.server-id"));
 
