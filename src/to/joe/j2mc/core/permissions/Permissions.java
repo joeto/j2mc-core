@@ -223,18 +223,8 @@ public class Permissions implements Listener {
      */
     @EventHandler(priority = EventPriority.LOWEST)
     public void playerLogin(PlayerLoginEvent event) {
+        this.initializePlayerPermissions(event.getPlayer().getName());
         this.refreshPermissions(event.getPlayer());
-    }
-
-    /**
-     * Called before a player joins the game.
-     * Do not call this
-     * 
-     * @param player
-     */
-    @EventHandler(priority = EventPriority.LOWEST)
-    public void playerPreLogin(PlayerPreLoginEvent event) {
-        this.initializePlayerPermissions(event.getName());
     }
 
     /**
