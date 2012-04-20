@@ -7,6 +7,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.kitteh.vanish.staticaccess.VanishNoPacket;
 
 import to.joe.j2mc.core.MySQL.MySQL;
+import to.joe.j2mc.core.command.ReloadPermissionsCommand;
 import to.joe.j2mc.core.log.CommandLogger;
 import to.joe.j2mc.core.log.LogColors;
 import to.joe.j2mc.core.permissions.Permissions;
@@ -110,12 +111,14 @@ public class J2MC_Core extends JavaPlugin {
         try{
         J2MC_Manager.getInstance().setMySQL(new MySQL(mySQLDatabase, mySQLUsername, mySQLPassword));
         }catch(Exception e){
+            e.printStackTrace();
             J2MC_Core.this.buggerAll("SQL failure");
         }
 
         J2MC_Manager.getInstance().setServerID(this.getConfig().getInt("General.server-id"));
 
         J2MC_Manager.getInstance().setPermissions(new Permissions(this));
+        this.getCommand("reloadpermissions").setExecutor(new ReloadPermissionsCommand(this));
 
         J2MC_Manager.getInstance().setVisibility(new Visibility());
         this.getServer().getPluginManager().registerEvents(new CommandLogger(this), this);

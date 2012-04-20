@@ -5,6 +5,11 @@ load: STARTUP
 website: http://forums.joe.to
 author: J2 Minecraft Plugin Team
 description: Core.
+commands:
+  reloadpermissions:
+    description: reload permissions
+    permission: j2mc.senior
+    permission-message: nope.avi
 permissions:
   j2mc.core.admin:
     default: op

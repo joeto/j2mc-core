@@ -37,14 +37,22 @@ public class Permissions implements Listener {
      * groups: default, admin, srstaff
      */
 
-    private final HashMap<Character, HashMap<String, Boolean>> permissions;
-    private final HashMap<String, PermissionAttachment> attachments;
-    private final HashMap<String, HashSet<Character>> playerFlags;
-    private final HashMap<String, HashSet<Character>> groupFlags;
-    private final HashMap<String, String> playerGroup;
+    private HashMap<Character, HashMap<String, Boolean>> permissions;
+    private HashMap<String, PermissionAttachment> attachments;
+    private HashMap<String, HashSet<Character>> playerFlags;
+    private HashMap<String, HashSet<Character>> groupFlags;
+    private HashMap<String, String> playerGroup;
 
     public Permissions(J2MC_Core plugin) {
         this.plugin = plugin;
+        this.loadGroupsAndPermissions();
+        J2MC_Manager.getCore().getServer().getPluginManager().registerEvents(this, J2MC_Manager.getCore());
+    }
+    
+    /**
+     * Reload groups and permissions
+     */
+    public void loadGroupsAndPermissions() {
         this.permissions = new HashMap<Character, HashMap<String, Boolean>>();
         this.attachments = new HashMap<String, PermissionAttachment>();
         this.playerFlags = new HashMap<String, HashSet<Character>>();
@@ -85,7 +93,6 @@ public class Permissions implements Listener {
             e.printStackTrace();
             plugin.buggerAll("Could not load SQL groups");
         }
-        J2MC_Manager.getCore().getServer().getPluginManager().registerEvents(this, J2MC_Manager.getCore());
         for (final Player player : this.plugin.getServer().getOnlinePlayers()) {
             if (player != null) {
                 this.initializePlayerPermissions(player.getName());
