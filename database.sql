@@ -90,6 +90,7 @@ CREATE TABLE IF NOT EXISTS `users` (
 CREATE TABLE IF NOT EXISTS `perms` (
 `server_id` tinyint(4) NOT NULL,
   `permission` varchar(255) NOT NULL,
+  `value` bit(1) NOT NULL DEFAULT b'1',
   `flag` char(1) NOT NULL,
   PRIMARY KEY (`server_id`),
   KEY `permission` (`permission`,`flag`,`server_id`)

@@ -5,13 +5,13 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerLoginEvent;
-import org.bukkit.event.player.PlayerPreLoginEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.permissions.PermissionAttachment;
 
@@ -37,7 +37,7 @@ public class Permissions implements Listener {
      * groups: default, admin, srstaff
      */
 
-    private final HashMap<Character, HashSet<String>> permissions;
+    private final HashMap<Character, HashMap<String, Boolean>> permissions;
     private final HashMap<String, PermissionAttachment> attachments;
     private final HashMap<String, HashSet<Character>> playerFlags;
     private final HashMap<String, HashSet<Character>> groupFlags;
@@ -45,7 +45,7 @@ public class Permissions implements Listener {
 
     public Permissions(J2MC_Core plugin) {
         this.plugin = plugin;
-        this.permissions = new HashMap<Character, HashSet<String>>();
+        this.permissions = new HashMap<Character, HashMap<String, Boolean>>();
         this.attachments = new HashMap<String, PermissionAttachment>();
         this.playerFlags = new HashMap<String, HashSet<Character>>();
         this.groupFlags = new HashMap<String, HashSet<Character>>();
@@ -67,18 +67,19 @@ public class Permissions implements Listener {
             if (!this.groupFlags.containsKey("default")) {
                 throw new Exception();
             }
-            final PreparedStatement readPermissions = J2MC_Manager.getMySQL().getFreshPreparedStatementHotFromTheOven("SELECT `permission`, `flag` FROM `perms` WHERE `server_id`=?");
+            final PreparedStatement readPermissions = J2MC_Manager.getMySQL().getFreshPreparedStatementHotFromTheOven("SELECT `permission`, `flag`, `value` FROM `perms` WHERE `server_id`=?");
             readPermissions.setInt(1, J2MC_Manager.getServerID());
             final ResultSet readPermissionsResult = readPermissions.executeQuery();
             while (readPermissionsResult.next()) {
                 final String permission = readPermissionsResult.getString("permission");
                 final String flagString = readPermissionsResult.getString("flag");
+                final boolean value = readPermissionsResult.getBoolean("value");
                 final char flag = flagString.toCharArray()[0];
                 if (!this.permissions.containsKey(flag)) {
-                    this.permissions.put(flag, new HashSet<String>());
+                    this.permissions.put(flag, new HashMap<String, Boolean>());
                 }
-                this.permissions.get(flag).add(permission);
-                Debug.log(flag + " " + permission);
+                this.permissions.get(flag).put(permission, value);
+                Debug.log(flag + " " + permission + " " + value);
             }
         } catch (final Exception e) {
             e.printStackTrace();
@@ -177,6 +178,9 @@ public class Permissions implements Listener {
      * @return Returns true if player has flag, returns false if doesn't.
      */
     public boolean hasFlag(String player, char flag) {
+        if (this.playerFlags.get(player) == null) {
+            return false;
+        }
         if (this.playerFlags.get(player).contains(flag)) {
             return true;
         } else {
@@ -276,10 +280,10 @@ public class Permissions implements Listener {
             }
             completed.add(flag);
             if (this.permissions.containsKey(flag)) {
-                final HashSet<String> permissions = this.permissions.get(flag);
-                for (final String permission : permissions) {
-                    Debug.log("Node: " + permission);
-                    attachment.setPermission(permission, true);
+                final HashMap<String, Boolean> permissionsAndValue = this.permissions.get(flag);
+                for (Map.Entry<String, Boolean> entry : permissionsAndValue.entrySet()) {
+                    Debug.log("Node: " + entry.getKey() + ", Value: " + entry.getValue());
+                    attachment.setPermission(entry.getKey(), entry.getValue());
                 }
             }
         }
