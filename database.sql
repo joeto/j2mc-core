@@ -15,7 +15,7 @@ CREATE TABLE IF NOT EXISTS `alias` (
   `Logins` int(11) NOT NULL,
   KEY `Name` (`Name`),
   KEY `IP` (`IP`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
 --
@@ -38,7 +38,7 @@ CREATE TABLE IF NOT EXISTS `j2bans` (
   `world` varchar(32) NOT NULL,
   `server` tinyint(4) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=9 ;
+) DEFAULT CHARSET=latin1 AUTO_INCREMENT=9 ;
 
 -- --------------------------------------------------------
 
@@ -62,7 +62,7 @@ CREATE TABLE IF NOT EXISTS `reports` (
   `server` tinyint(1) NOT NULL,
   `time` int(32) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=7 ;
+) DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=7 ;
 
 -- --------------------------------------------------------
 
@@ -79,7 +79,7 @@ CREATE TABLE IF NOT EXISTS `users` (
   `IRChost` varchar(80) NOT NULL DEFAULT '',
   PRIMARY KEY (`id`),
   UNIQUE KEY `name` (`name`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=5 ;
+) DEFAULT CHARSET=latin1 AUTO_INCREMENT=5 ;
 
 -- --------------------------------------------------------
 
@@ -94,7 +94,7 @@ CREATE TABLE IF NOT EXISTS `perms` (
   `flag` char(1) NOT NULL,
   PRIMARY KEY (`server_id`),
   KEY `permission` (`permission`,`flag`,`server_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
 
@@ -107,7 +107,7 @@ CREATE TABLE IF NOT EXISTS `groups` (
   `name` varchar(64) NOT NULL,
   `flags` varchar(64) NOT NULL,
   `server_id` int(1) NOT NULL
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
 
@@ -125,4 +125,21 @@ CREATE TABLE IF NOT EXISTS `teleport` (
   `z` double NOT NULL,
   `pitch` float NOT NULL,
   `yaw` float NOT NULL
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) DEFAULT CHARSET=latin1;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `notes`
+--
+
+CREATE TABLE IF NOT EXISTS `notes` (
+  `id` int(20) NOT NULL AUTO_INCREMENT,
+  `from` varchar(16) NOT NULL,
+  `to` varchar(16) NOT NULL,
+  `message` text NOT NULL,
+  `time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `adminBusiness` bit(1) NOT NULL,
+  `received` bit(1) NOT NULL DEFAULT b'0',
+  PRIMARY KEY (`id`)
+) DEFAULT CHARSET=latin1 AUTO_INCREMENT=8 ;
