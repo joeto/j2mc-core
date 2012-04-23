@@ -226,6 +226,24 @@ public class Permissions implements Listener {
         this.playerGroup.put(name, group);
         this.playerFlags.put(name, flags);
     }
+    
+    /**
+     * Returns player's flags
+     * 
+     * @param player
+     * 
+     */
+    public HashSet<Character> getFlags(String player) {
+        final HashSet<Character> flags = new HashSet<Character>();
+        if (this.playerFlags.get(player) != null) {
+            flags.addAll(this.playerFlags.get(player));
+        }
+        final String group = this.playerGroup.get(player);
+        if (this.groupFlags.get(group) != null) {
+            flags.addAll(this.groupFlags.get(group));
+        }
+        return flags;
+    }
 
     /**
      * Called when a player joins the game.
@@ -273,7 +291,9 @@ public class Permissions implements Listener {
         final PermissionAttachment attachment = player.addAttachment(this.plugin);
 
         final HashSet<Character> flags = new HashSet<Character>();
-        flags.addAll(this.playerFlags.get(name));
+        if (this.playerFlags.get(name) != null) {
+            flags.addAll(this.playerFlags.get(name));
+        }
         final String group = this.playerGroup.get(name);
         if (this.groupFlags.get(group) != null) {
             flags.addAll(this.groupFlags.get(group));
