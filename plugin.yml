@@ -1,4 +1,4 @@
-name: J2MC_Core
+name: Core
 main: to.joe.j2mc.core.J2MC_Core
 version: 1.0
 load: STARTUP
