@@ -45,6 +45,7 @@ public class Permissions implements Listener {
 
     public Permissions(J2MC_Core plugin) {
         this.plugin = plugin;
+        this.attachments = new HashMap<String, PermissionAttachment>();
         this.loadGroupsAndPermissions();
         J2MC_Manager.getCore().getServer().getPluginManager().registerEvents(this, J2MC_Manager.getCore());
     }
@@ -54,7 +55,6 @@ public class Permissions implements Listener {
      */
     public void loadGroupsAndPermissions() {
         this.permissions = new HashMap<Character, HashMap<String, Boolean>>();
-        this.attachments = new HashMap<String, PermissionAttachment>();
         this.playerFlags = new HashMap<String, HashSet<Character>>();
         this.groupFlags = new HashMap<String, HashSet<Character>>();
         this.playerGroup = new HashMap<String, String>();
