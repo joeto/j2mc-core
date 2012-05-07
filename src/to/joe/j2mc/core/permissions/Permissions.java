@@ -14,6 +14,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerLoginEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.permissions.PermissionAttachment;
+import org.bukkit.permissions.PermissionAttachmentInfo;
 
 import to.joe.j2mc.core.Debug;
 import to.joe.j2mc.core.J2MC_Core;
@@ -286,7 +287,12 @@ public class Permissions implements Listener {
     private void refreshPermissions(Player player) {
         final String name = player.getName();
         if (this.attachments.containsKey(name)) {
-            player.removeAttachment(this.attachments.remove(name));
+            for (PermissionAttachmentInfo PAInfo : player.getEffectivePermissions()) {
+                if (PAInfo.getAttachment().equals(this.attachments.get(name))) {
+                    player.removeAttachment(this.attachments.remove(name));
+                    break;
+                }
+            }
         }
         final PermissionAttachment attachment = player.addAttachment(this.plugin);
 
