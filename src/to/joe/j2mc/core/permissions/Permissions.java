@@ -31,6 +31,7 @@ public class Permissions implements Listener {
      * t - trusted
      * d - donator
      * N - NSA
+     * k - kibbles
      * 
      */
 
