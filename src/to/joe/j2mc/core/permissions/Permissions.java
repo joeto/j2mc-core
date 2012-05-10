@@ -289,9 +289,11 @@ public class Permissions implements Listener {
         final String name = player.getName();
         if (this.attachments.containsKey(name)) {
             for (PermissionAttachmentInfo PAInfo : player.getEffectivePermissions()) {
-                if (PAInfo.getAttachment().equals(this.attachments.get(name))) {
-                    player.removeAttachment(this.attachments.remove(name));
-                    break;
+                if (PAInfo != null && PAInfo.getAttachment() != null && this.attachments.get(name) != null) {
+                    if (PAInfo.getAttachment().equals(this.attachments.get(name))) {
+                        player.removeAttachment(this.attachments.remove(name));
+                        break;
+                    }
                 }
             }
         }
