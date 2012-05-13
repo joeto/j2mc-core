@@ -20,6 +20,7 @@ public class CommandLogger implements Listener {
         final String message = event.getMessage();
         if (event.isCancelled()) {
             this.core.getLogger().info(event.getPlayer().getName() + " used command: " + message + " (Command was cancelled)");
+            return;
         }
         this.core.getLogger().info(event.getPlayer().getName() + " used command: " + message);
     }
