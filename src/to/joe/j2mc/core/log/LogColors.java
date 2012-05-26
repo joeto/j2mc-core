@@ -45,6 +45,6 @@ public class LogColors {
                 result = result.replaceAll(color.toString(), "");
             }
         }
-        return result + attrib(0);
+        return result + Ansi.ansi().a(Attribute.RESET).fg(Ansi.Color.DEFAULT).toString();
     }
 }
