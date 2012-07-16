@@ -102,6 +102,17 @@ public class Permissions implements Listener {
             }
         }
     }
+    
+    /**
+     * Call to remove a permission from a player
+     * 
+     * @param player
+     * @param permission
+     */
+    public void removePermission(Player player, String permission) {
+        PermissionAttachment pa = this.attachments.get(player.getName());
+        pa.unsetPermission(permission);
+    }
 
     /**
      * Temporarily add a flag to a player
