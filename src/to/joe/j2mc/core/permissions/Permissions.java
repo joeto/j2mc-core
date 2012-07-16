@@ -126,7 +126,7 @@ public class Permissions implements Listener {
     }
 
     /**
-     * Add a permenant flag to a player
+     * Add a permanent flag to a player
      * 
      * @param player
      * @param flag
@@ -153,7 +153,7 @@ public class Permissions implements Listener {
     }
 
     /**
-     * Add a permenant flag to a player (use for offline players)
+     * Add a permanent flag to a player (use for offline players)
      * 
      * @param player
      * @param flag
