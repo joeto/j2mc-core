@@ -40,6 +40,7 @@ public class Permissions implements Listener {
      */
 
     private HashMap<Character, HashMap<String, Boolean>> permissions;
+    private HashMap<Character, HashMap<String, Boolean>> modulePermissions = new HashMap<Character, HashMap<String,Boolean>>();
     private HashMap<String, PermissionAttachment> attachments;
     private HashMap<String, HashSet<Character>> playerFlags;
     private HashMap<String, HashSet<Character>> groupFlags;
@@ -60,6 +61,7 @@ public class Permissions implements Listener {
         this.playerFlags = new HashMap<String, HashSet<Character>>();
         this.groupFlags = new HashMap<String, HashSet<Character>>();
         this.playerGroup = new HashMap<String, String>();
+        this.permissions.putAll(modulePermissions);
         try {
             final PreparedStatement statement = J2MC_Manager.getMySQL().getFreshPreparedStatementHotFromTheOven("SELECT `name`,`flags` FROM `groups` WHERE `server_id`=?");
             statement.setInt(1, J2MC_Manager.getServerID());
@@ -98,6 +100,21 @@ public class Permissions implements Listener {
         for (final Player player : this.plugin.getServer().getOnlinePlayers()) {
             if (player != null) {
                 this.initializePlayerPermissions(player.getName());
+                this.refreshPermissions(player);
+            }
+        }
+    }
+    
+    /**
+     * Call to add a priority flag -> permission relation
+     */
+    public void addFlagPermissionRelation(String permissionNode, char flag, boolean value) {
+        HashMap<String, Boolean> tempMap = new HashMap<String, Boolean>();
+        tempMap.put(permissionNode, value);
+        this.modulePermissions.put(flag, tempMap);
+        this.permissions.put(flag, tempMap);
+        for (final Player player : this.plugin.getServer().getOnlinePlayers()) {
+            if (player != null) {
                 this.refreshPermissions(player);
             }
         }
