@@ -34,14 +34,15 @@ public class J2MC_Core extends JavaPlugin {
     }
 
     /**
-     * Send message to those with j2mc.message.receive.admin
+     * Send message to those with j2mc.core.admin 
      * and to the server log at INFO level
+     * This method is thread safe.
      * 
      * @param message
      */
     public void adminAndLog(String message) {
-        for (final Player player : this.getServer().getOnlinePlayers()) {
-            if (player.hasPermission("j2mc.core.admin")) {
+        for (final Player player : J2MC_Manager.getPermissions().getPlayerCache()) {
+            if (J2MC_Manager.getPermissions().isAdmin(player.getName())) {
                 player.sendMessage(message);
             }
         }

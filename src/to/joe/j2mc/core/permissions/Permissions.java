@@ -45,12 +45,29 @@ public class Permissions implements Listener {
     private HashMap<String, HashSet<Character>> playerFlags;
     private HashMap<String, HashSet<Character>> groupFlags;
     private HashMap<String, String> playerGroup;
+    private Player[] playerCache;
+    public HashSet<String> adminCache;
 
     public Permissions(J2MC_Core plugin) {
         this.plugin = plugin;
         this.attachments = new HashMap<String, PermissionAttachment>();
         this.loadGroupsAndPermissions();
+        J2MC_Manager.getCore().getServer().getScheduler().scheduleSyncRepeatingTask(J2MC_Manager.getCore(), new PermissionCachingTask(J2MC_Manager.getCore(), this), 100, 100);
         J2MC_Manager.getCore().getServer().getPluginManager().registerEvents(this, J2MC_Manager.getCore());
+    }
+    
+    /**
+     * Retrieve player cache for thread safe methods
+     * @return
+     */
+    public synchronized Player[] getPlayerCache() {
+        return this.playerCache;
+    }
+    /**
+     * Set player cache for thread safe methods
+     */
+    public synchronized void setPlayerCache(Player[] list) {
+        this.playerCache = list.clone();
     }
     
     /**
@@ -61,6 +78,7 @@ public class Permissions implements Listener {
         this.playerFlags = new HashMap<String, HashSet<Character>>();
         this.groupFlags = new HashMap<String, HashSet<Character>>();
         this.playerGroup = new HashMap<String, String>();
+        this.adminCache = new HashSet<String>();
         this.permissions.putAll(modulePermissions);
         try {
             final PreparedStatement statement = J2MC_Manager.getMySQL().getFreshPreparedStatementHotFromTheOven("SELECT `name`,`flags` FROM `groups` WHERE `server_id`=?");
@@ -258,6 +276,15 @@ public class Permissions implements Listener {
     }
     
     /**
+     * Checks if player is admin, thread safe.
+     * @param Player name
+     *
+     */
+    public boolean isAdmin(String playerName) {
+        return this.adminCache.contains(playerName);
+    }
+    
+    /**
      * Returns player's flags
      * 
      * @param player
@@ -285,6 +312,9 @@ public class Permissions implements Listener {
     public void playerLogin(PlayerLoginEvent event) {
         this.initializePlayerPermissions(event.getPlayer().getName());
         this.refreshPermissions(event.getPlayer());
+        if (event.getPlayer().hasPermission("j2mc.core.admin")) {
+            this.adminCache.add(event.getPlayer().getName());
+        }
     }
 
     /**
@@ -298,6 +328,7 @@ public class Permissions implements Listener {
         final Player player = event.getPlayer();
         this.attachments.remove(player.getName());
         this.playerFlags.remove(player.getName());
+        this.adminCache.remove(player.getName());
     }
 
     /**
