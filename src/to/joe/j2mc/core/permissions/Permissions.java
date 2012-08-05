@@ -3,9 +3,11 @@ package to.joe.j2mc.core.permissions;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -46,7 +48,7 @@ public class Permissions implements Listener {
     private HashMap<String, HashSet<Character>> groupFlags;
     private HashMap<String, String> playerGroup;
     private Player[] playerCache;
-    public HashSet<String> adminCache;
+    public Set<String> adminCache;
 
     public Permissions(J2MC_Core plugin) {
         this.plugin = plugin;
@@ -78,7 +80,7 @@ public class Permissions implements Listener {
         this.playerFlags = new HashMap<String, HashSet<Character>>();
         this.groupFlags = new HashMap<String, HashSet<Character>>();
         this.playerGroup = new HashMap<String, String>();
-        this.adminCache = new HashSet<String>();
+        this.adminCache = Collections.synchronizedSet(new HashSet<String>());
         this.permissions.putAll(modulePermissions);
         try {
             final PreparedStatement statement = J2MC_Manager.getMySQL().getFreshPreparedStatementHotFromTheOven("SELECT `name`,`flags` FROM `groups` WHERE `server_id`=?");
