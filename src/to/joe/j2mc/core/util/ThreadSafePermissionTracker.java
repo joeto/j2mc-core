@@ -33,9 +33,7 @@ public class ThreadSafePermissionTracker implements Listener, Runnable {
 
             @Override
             public boolean contains(Object o) {
-                synchronized (this.sync) {
-                    return super.contains(((String) o).toLowerCase());
-                }
+                return super.contains(((String) o).toLowerCase());
             }
 
             @Override
