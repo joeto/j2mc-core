@@ -22,16 +22,20 @@ public class ThreadSafePermissionTracker implements Listener, Runnable {
         this.plugin = plugin;
         this.perm = permission;
         this.havingPerm = Collections.synchronizedSet(new HashSet<String>());
-        
+
         this.plugin.getServer().getPluginManager().registerEvents(this, plugin);
-        this.plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, this, 40);
+        this.plugin.getServer().getScheduler().scheduleSyncRepeatingTask(plugin, this, 40, 40);
     }
 
     public boolean hasPermission(String player) {
         return this.havingPerm.contains(player);
     }
 
-    @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
+    public boolean hasPermission(Player player) {
+        return this.havingPerm.contains(player.getName());
+    }
+
+    @EventHandler(priority = EventPriority.MONITOR)
     public void onJoin(PlayerJoinEvent event) {
         if (event.getPlayer().hasPermission(perm)) {
             this.havingPerm.add(event.getPlayer().getName());
