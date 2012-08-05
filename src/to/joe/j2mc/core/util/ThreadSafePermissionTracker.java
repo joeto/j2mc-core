@@ -1,6 +1,5 @@
 package to.joe.j2mc.core.util;
 
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -21,7 +20,31 @@ public class ThreadSafePermissionTracker implements Listener, Runnable {
     public ThreadSafePermissionTracker(Plugin plugin, String permission) {
         this.plugin = plugin;
         this.perm = permission;
-        this.havingPerm = Collections.synchronizedSet(new HashSet<String>());
+        this.havingPerm = new HashSet<String>() {
+            private static final long serialVersionUID = 1L;
+            private final Object sync = new Object();
+
+            @Override
+            public boolean add(String e) {
+                synchronized (this.sync) {
+                    return super.add(e.toLowerCase());
+                }
+            }
+
+            @Override
+            public boolean contains(Object o) {
+                synchronized (this.sync) {
+                    return super.contains(((String) o).toLowerCase());
+                }
+            }
+
+            @Override
+            public boolean remove(Object o) {
+                synchronized (this.sync) {
+                    return super.remove(((String) o).toLowerCase());
+                }
+            }
+        };
 
         this.plugin.getServer().getPluginManager().registerEvents(this, plugin);
         this.plugin.getServer().getScheduler().scheduleSyncRepeatingTask(plugin, this, 10, 10);
@@ -31,29 +54,29 @@ public class ThreadSafePermissionTracker implements Listener, Runnable {
         return this.hasPermission(player.getName());
     }
 
-    public boolean hasPermission(String player) {
-        return this.havingPerm.contains(player.toLowerCase());
+    public boolean hasPermission(String playerName) {
+        return this.havingPerm.contains(playerName);
     }
 
     @EventHandler(priority = EventPriority.MONITOR)
     public void onJoin(PlayerJoinEvent event) {
         if (event.getPlayer().hasPermission(this.perm)) {
-            this.havingPerm.add(event.getPlayer().getName().toLowerCase());
+            this.havingPerm.add(event.getPlayer().getName());
         }
     }
 
     @EventHandler(priority = EventPriority.MONITOR)
     public void onQuit(PlayerQuitEvent event) {
-        this.havingPerm.remove(event.getPlayer().getName().toLowerCase());
+        this.havingPerm.remove(event.getPlayer().getName());
     }
 
     @Override
     public void run() {
         for (final Player player : this.plugin.getServer().getOnlinePlayers()) {
             if (player.hasPermission(this.perm)) {
-                this.havingPerm.add(player.getName().toLowerCase());
+                this.havingPerm.add(player.getName());
             } else {
-                this.havingPerm.remove(player.getName().toLowerCase());
+                this.havingPerm.remove(player.getName());
             }
         }
     }
