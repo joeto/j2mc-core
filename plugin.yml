@@ -2,7 +2,7 @@ name: Core
 main: to.joe.j2mc.core.J2MC_Core
 version: 1.0
 load: STARTUP
-loadbefore: [Bans, IRC]
+loadbefore: [Bans, IRC, Chat]
 website: http://forums.joe.to
 author: J2 Minecraft Plugin Team
 description: Core.
