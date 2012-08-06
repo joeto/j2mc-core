@@ -31,28 +31,28 @@ public class ThreadSafePermissionTracker implements Listener, Runnable {
     }
 
     public boolean hasPermission(String playerName) {
-        return this.havingPerm.containsKey(playerName);
+        return this.havingPerm.containsKey(playerName.toLowerCase());
     }
 
     @EventHandler(priority = EventPriority.MONITOR)
     public void onJoin(PlayerJoinEvent event) {
         if (event.getPlayer().hasPermission(this.perm)) {
-            this.havingPerm.put(event.getPlayer().getName(), true);
+            this.havingPerm.put(event.getPlayer().getName().toLowerCase(), true);
         }
     }
 
     @EventHandler(priority = EventPriority.MONITOR)
     public void onQuit(PlayerQuitEvent event) {
-        this.havingPerm.remove(event.getPlayer().getName());
+        this.havingPerm.remove(event.getPlayer().getName().toLowerCase());
     }
 
     @Override
     public void run() {
         for (final Player player : this.plugin.getServer().getOnlinePlayers()) {
             if (player.hasPermission(this.perm)) {
-                this.havingPerm.put(player.getName(), true);
+                this.havingPerm.put(player.getName().toLowerCase(), true);
             } else {
-                this.havingPerm.remove(player.getName());
+                this.havingPerm.remove(player.getName().toLowerCase());
             }
         }
     }
