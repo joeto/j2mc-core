@@ -22,11 +22,10 @@ public class ThreadSafePermissionTracker implements Listener, Runnable {
         this.perm = permission;
         this.havingPerm = new HashSet<String>() {
             private static final long serialVersionUID = 1L;
-            private final Object sync = new Object();
 
             @Override
             public boolean add(String e) {
-                synchronized (this.sync) {
+                synchronized (this) {
                     return super.add(e.toLowerCase());
                 }
             }
@@ -38,7 +37,7 @@ public class ThreadSafePermissionTracker implements Listener, Runnable {
 
             @Override
             public boolean remove(Object o) {
-                synchronized (this.sync) {
+                synchronized (this) {
                     return super.remove(((String) o).toLowerCase());
                 }
             }
