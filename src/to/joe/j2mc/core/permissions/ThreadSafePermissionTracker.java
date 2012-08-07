@@ -1,4 +1,4 @@
-package to.joe.j2mc.core.util;
+package to.joe.j2mc.core.permissions;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;

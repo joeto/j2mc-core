@@ -54,7 +54,19 @@ public class Permissions implements Listener {
         this.plugin = plugin;
         this.attachments = new HashMap<String, PermissionAttachment>();
         this.loadGroupsAndPermissions();
-        J2MC_Manager.getCore().getServer().getScheduler().scheduleSyncRepeatingTask(J2MC_Manager.getCore(), new PermissionCachingTask(J2MC_Manager.getCore(), this), 100, 100);
+        J2MC_Manager.getCore().getServer().getScheduler().scheduleSyncRepeatingTask(J2MC_Manager.getCore(), new Runnable() {
+            @Override
+            public void run() {
+                Permissions.this.setPlayerCache(Permissions.this.plugin.getServer().getOnlinePlayers());
+                for (Player player : Permissions.this.plugin.getServer().getOnlinePlayers()) {
+                    if (player.hasPermission("j2mc.core.admin")) {
+                        Permissions.this.adminCache.add(player.getName());
+                    } else {
+                        Permissions.this.adminCache.remove(player.getName());
+                    }
+                }
+            }
+        }, 100, 100);
         J2MC_Manager.getCore().getServer().getPluginManager().registerEvents(this, J2MC_Manager.getCore());
     }
     
