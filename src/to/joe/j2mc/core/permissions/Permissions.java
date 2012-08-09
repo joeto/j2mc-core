@@ -54,6 +54,7 @@ public class Permissions implements Listener {
         this.plugin = plugin;
         this.attachments = new HashMap<String, PermissionAttachment>();
         this.loadGroupsAndPermissions();
+        this.setPlayerCache(plugin.getServer().getOnlinePlayers());
         J2MC_Manager.getCore().getServer().getScheduler().scheduleSyncRepeatingTask(J2MC_Manager.getCore(), new Runnable() {
             @Override
             public void run() {
