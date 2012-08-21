@@ -90,7 +90,7 @@ public class J2MC_Core extends JavaPlugin {
     }
 
     public void messageNonAdmin(String message) {
-        this.messageByNoPermission(message, "j2mc.message.receive.admin");
+        this.messageByNoPermission(message, "j2mc.core.admin");
     }
 
     @Override
