@@ -25,7 +25,7 @@ public class MySQL {
      * @throws SQLException
      * @throws ClassNotFoundException
      */
-    public PreparedStatement getFreshPreparedStatementHotFromTheOven(String query) throws SQLException, ClassNotFoundException {
+    public PreparedStatement getFreshPreparedStatementHotFromTheOven(String query) throws SQLException {
         final PreparedStatement preparedStatement = connection.prepareStatement(query);
         return preparedStatement;
     }
@@ -38,7 +38,7 @@ public class MySQL {
      * @throws SQLException
      * @throws ClassNotFoundException
      */
-    public PreparedStatement getFreshPreparedStatementWithGeneratedKeys(String query) throws SQLException, ClassNotFoundException {
+    public PreparedStatement getFreshPreparedStatementWithGeneratedKeys(String query) throws SQLException {
         final PreparedStatement ps = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
         return ps;
     }

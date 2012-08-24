@@ -196,8 +196,6 @@ public class Permissions implements Listener {
             ps.executeUpdate();
         } catch (final SQLException e) {
             e.printStackTrace();
-        } catch (final ClassNotFoundException e) {
-            e.printStackTrace();
         }
         this.refreshPermissions(player);
     }
@@ -220,8 +218,6 @@ public class Permissions implements Listener {
             ps.setString(2, player);
             ps.executeUpdate();
         } catch (final SQLException e) {
-            e.printStackTrace();
-        } catch (final ClassNotFoundException e) {
             e.printStackTrace();
         }
     }
