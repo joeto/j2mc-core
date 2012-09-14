@@ -7,14 +7,14 @@ public class MySQL {
     private final String mySQLDatabase;
     private final String mySQLUsername;
     private final String mySQLPassword;
-    private Connection connection;
+    private MySQLConnectionPool pool;
 
     public MySQL(String database, String username, String password) throws ClassNotFoundException, SQLException {
         this.mySQLDatabase = database;
         this.mySQLUsername = username;
         this.mySQLPassword = password;
         Class.forName("com.mysql.jdbc.Driver");
-        connection = DriverManager.getConnection(this.mySQLDatabase + "?autoReconnect=true&user=" + this.mySQLUsername + "&password=" + this.mySQLPassword);
+        pool = new MySQLConnectionPool(this.mySQLDatabase + "?autoReconnect=true&user=" + this.mySQLUsername + "&password=" + this.mySQLPassword);
     }
 
     /**
@@ -26,7 +26,7 @@ public class MySQL {
      * @throws ClassNotFoundException
      */
     public PreparedStatement getFreshPreparedStatementHotFromTheOven(String query) throws SQLException {
-        final PreparedStatement preparedStatement = connection.prepareStatement(query);
+        final PreparedStatement preparedStatement = pool.getConnection().prepareStatement(query);
         return preparedStatement;
     }
 
@@ -39,7 +39,15 @@ public class MySQL {
      * @throws ClassNotFoundException
      */
     public PreparedStatement getFreshPreparedStatementWithGeneratedKeys(String query) throws SQLException {
-        final PreparedStatement ps = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
+        final PreparedStatement ps = pool.getConnection().prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
         return ps;
+    }
+    
+    /**
+     * Gets a connection from the connection pool
+     * @throws SQLException 
+     */
+    public Connection getConnection() throws SQLException {
+        return pool.getConnection();
     }
 }
