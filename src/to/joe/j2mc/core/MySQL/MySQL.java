@@ -20,7 +20,7 @@ public class MySQL {
         Class.forName("com.mysql.jdbc.Driver");
         pool = new MySQLConnectionPool(this.mySQLDatabase + "?autoReconnect=true&user=" + this.mySQLUsername + "&password=" + this.mySQLPassword);
         
-        plugin.getServer().getScheduler().scheduleSyncRepeatingTask(plugin, new Runnable() {
+        this.plugin.getServer().getScheduler().scheduleSyncRepeatingTask(plugin, new Runnable() {
             
             @Override
             public void run() {
@@ -64,4 +64,13 @@ public class MySQL {
     public Connection getConnection() throws SQLException {
         return pool.getConnection();
     }
+    
+    /**
+     * Gets the current connection pool
+     * @return
+     */
+    public MySQLConnectionPool getPool() {
+        return pool;
+    }
+    
 }

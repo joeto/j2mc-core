@@ -11,6 +11,10 @@ commands:
     description: reload permissions
     permission: j2mc.senior
     permission-message: nope.avi
+  debugcore:
+    description: Various debugging informations and such
+    permission: j2mc.senior
+    permission-message: nope.avi
 permissions:
   j2mc.core.admin:
     default: op

@@ -39,6 +39,10 @@ public class MySQLConnectionPool implements Closeable {
         }
         lock.unlock();
     }
+    
+    public JDCConnection[] getConnections() {
+        return this.connections;
+    }
 
     public Connection getConnection() throws SQLException {
         lock.lock();
@@ -64,7 +68,7 @@ public class MySQLConnectionPool implements Closeable {
         }
     }
 
-    private class JDCConnection {
+    public class JDCConnection {
         private final Connection conn;
         private int load = 0;
 
@@ -72,7 +76,6 @@ public class MySQLConnectionPool implements Closeable {
             this.conn = conn;
         }
 
-        @SuppressWarnings("unused")
         public void close() {
             try {
                 if (!conn.getAutoCommit()) {

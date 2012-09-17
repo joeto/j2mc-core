@@ -7,6 +7,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.kitteh.vanish.staticaccess.VanishNoPacket;
 
 import to.joe.j2mc.core.MySQL.MySQL;
+import to.joe.j2mc.core.command.DebugCommand;
 import to.joe.j2mc.core.command.ReloadPermissionsCommand;
 import to.joe.j2mc.core.log.CommandLogger;
 import to.joe.j2mc.core.log.LogColors;
@@ -120,6 +121,7 @@ public class J2MC_Core extends JavaPlugin {
 
         J2MC_Manager.getInstance().setPermissions(new Permissions(this));
         this.getCommand("reloadpermissions").setExecutor(new ReloadPermissionsCommand(this));
+        this.getCommand("debugcore").setExecutor(new DebugCommand(this));
 
         J2MC_Manager.getInstance().setVisibility(new Visibility());
         this.getServer().getPluginManager().registerEvents(new CommandLogger(this), this);
