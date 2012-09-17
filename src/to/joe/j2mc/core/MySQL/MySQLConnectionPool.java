@@ -4,37 +4,38 @@ import java.io.Closeable;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
-import java.util.Enumeration;
-import java.util.Iterator;
-import java.util.Vector;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
 public class MySQLConnectionPool implements Closeable {
 
-    private final static int poolsize = 6;
-    private final static long timeToLive = 300000;
-    private final Vector<JDCConnection> connections;
-    private final ConnectionReaper reaper;
+    private final static int poolsize = 4;
+    private final JDCConnection[] connections;
     private final String url;
     private final Lock lock = new ReentrantLock();
 
-    public MySQLConnectionPool(String url) throws ClassNotFoundException {
+    public MySQLConnectionPool(String url) throws ClassNotFoundException, SQLException {
         Class.forName("com.mysql.jdbc.Driver");
         this.url = url;
-        connections = new Vector<JDCConnection>(poolsize);
-        reaper = new ConnectionReaper();
-        reaper.start();
+        connections = new JDCConnection[poolsize];
+        for (int i = 0; i < connections.length; i++) {
+            connections[i] = new JDCConnection(DriverManager.getConnection(url));
+        }
     }
 
     @Override
     public void close() {
         lock.lock();
-        final Enumeration<JDCConnection> conns = connections.elements();
-        while (conns.hasMoreElements()) {
-            final JDCConnection conn = conns.nextElement();
-            connections.remove(conn);
-            conn.terminate();
+        for (JDCConnection connection : connections) {
+            connection.terminate();
+        }
+        lock.unlock();
+    }
+    
+    public void resetLoads() {
+        lock.lock();
+        for (JDCConnection connection : connections) {
+            connection.setLoad(0);
         }
         lock.unlock();
     }
@@ -42,105 +43,64 @@ public class MySQLConnectionPool implements Closeable {
     public Connection getConnection() throws SQLException {
         lock.lock();
         try {
-            final Enumeration<JDCConnection> conns = connections.elements();
-            while (conns.hasMoreElements()) {
-                final JDCConnection conn = conns.nextElement();
-                if (conn.lease()) {
-                    if (conn.isValid()) {
-                        return conn.getConnection();
-                    }
-                    connections.remove(conn);
-                    conn.terminate();
+            int lowestIndex = 0;
+            int lowestLoad = 0;
+            for (int i = 0; i < connections.length; i++) {
+                JDCConnection connection = connections[i];
+                if (!connection.getConnection().isValid(1)) {
+                    connection.terminate();
+                    connections[i] = new JDCConnection(DriverManager.getConnection(url));
+                }
+                if (connection.getLoad() < lowestLoad) {
+                    lowestLoad = connection.getLoad();
+                    lowestIndex = i;
                 }
             }
-            final JDCConnection conn = new JDCConnection(DriverManager.getConnection(url));
-            conn.lease();
-            if (!conn.isValid()) {
-                conn.terminate();
-                throw new SQLException("Failed to validate a brand new connection");
-            }
-            connections.add(conn);
-            return conn.getConnection();
+
+            connections[lowestIndex].incrementLoad();
+            return connections[lowestIndex].getConnection();
         } finally {
             lock.unlock();
         }
     }
 
-    private void reapConnections() {
-        lock.lock();
-        final long stale = System.currentTimeMillis() - timeToLive;
-        final Iterator<JDCConnection> itr = connections.iterator();
-        while (itr.hasNext()) {
-            final JDCConnection conn = itr.next();
-            if (conn.inUse() && stale > conn.getLastUse() && !conn.isValid())
-                itr.remove();
-        }
-        lock.unlock();
-    }
-
-    private class ConnectionReaper extends Thread {
-        @Override
-        public void run() {
-            while (true) {
-                try {
-                    Thread.sleep(300000);
-                } catch (final InterruptedException e) {
-                }
-                reapConnections();
-            }
-        }
-    }
-
     private class JDCConnection {
         private final Connection conn;
-        private boolean inuse;
-        private long timestamp;
+        private int load = 0;
 
         JDCConnection(Connection conn) {
             this.conn = conn;
-            inuse = false;
-            timestamp = 0;
         }
 
         @SuppressWarnings("unused")
         public void close() {
-            inuse = false;
             try {
                 if (!conn.getAutoCommit()) {
                     conn.setAutoCommit(true);
                 }
             } catch (final SQLException ex) {
-                connections.remove(conn);
                 terminate();
             }
-        }
-
-        long getLastUse() {
-            return timestamp;
         }
 
         synchronized Connection getConnection() {
             return this.conn;
         }
 
-        boolean inUse() {
-            return inuse;
+        public int getLoad() {
+            return this.load;
         }
 
-        boolean isValid() {
-            try {
-                return conn.isValid(1);
-            } catch (final SQLException ex) {
-                return false;
-            }
+        public void setLoad(int load) {
+            this.load = load;
         }
 
-        synchronized boolean lease() {
-            if (inuse)
-                return false;
-            inuse = true;
-            timestamp = System.currentTimeMillis();
-            return true;
+        public void incrementLoad() {
+            incrementLoad(1);
+        }
+
+        public void incrementLoad(int factor) {
+            this.load += factor;
         }
 
         void terminate() {

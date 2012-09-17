@@ -110,7 +110,7 @@ public class J2MC_Core extends JavaPlugin {
         final String mySQLPassword = this.getConfig().getString("MySQL.password");
         final String mySQLDatabase = this.getConfig().getString("MySQL.database");
         try{
-        J2MC_Manager.getInstance().setMySQL(new MySQL(mySQLDatabase, mySQLUsername, mySQLPassword));
+        J2MC_Manager.getInstance().setMySQL(new MySQL(mySQLDatabase, mySQLUsername, mySQLPassword, this));
         }catch(Exception e){
             e.printStackTrace();
             J2MC_Core.this.buggerAll("SQL failure");
