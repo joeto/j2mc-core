@@ -65,7 +65,13 @@ public class Visibility {
             }
         }
         if (players.size() > 1) {
-            throw new TooManyPlayersException(players.size());
+            StringBuilder sb = new StringBuilder();
+            for (Player player : players) {
+                sb.append(player.getName());
+                sb.append(", ");
+            }
+            sb.setLength(sb.length() - 2);
+            throw new TooManyPlayersException(sb.toString());
         }
         if (players.size() == 0) {
             throw new NoPlayersException();
