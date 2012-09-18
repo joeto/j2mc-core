@@ -48,7 +48,7 @@ public class MySQLConnectionPool implements Closeable {
         lock.lock();
         try {
             int lowestIndex = 0;
-            int lowestLoad = 0;
+            int lowestLoad = Integer.MAX_VALUE;
             for (int i = 0; i < connections.length; i++) {
                 JDCConnection connection = connections[i];
                 if (!connection.getConnection().isValid(1)) {
