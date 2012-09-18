@@ -144,8 +144,14 @@ public class Permissions implements Listener {
     public void addFlagPermissionRelation(String permissionNode, char flag, boolean value) {
         HashMap<String, Boolean> tempMap = new HashMap<String, Boolean>();
         tempMap.put(permissionNode, value);
-        this.modulePermissions.put(flag, tempMap);
-        this.permissions.put(flag, tempMap);
+        if (!this.modulePermissions.containsKey(flag)) {
+            this.modulePermissions.put(flag, new HashMap<String, Boolean>());
+        }
+        this.modulePermissions.get(flag).put(permissionNode, value);
+        if (!this.permissions.containsKey(flag)) {
+            this.permissions.put(flag, new HashMap<String, Boolean>());
+        }
+        this.permissions.get(flag).put(permissionNode, value);
         for (final Player player : this.plugin.getServer().getOnlinePlayers()) {
             if (player != null) {
                 this.refreshPermissions(player);
