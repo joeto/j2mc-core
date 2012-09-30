@@ -2,7 +2,9 @@ package to.joe.j2mc.core.visibility;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -37,7 +39,7 @@ public class Visibility {
         }
         return players;
     }
-
+    
     /**
      * @param target
      * @param searcher
@@ -47,12 +49,34 @@ public class Visibility {
      * @throws NoPlayersException
      */
     public Player getPlayer(String target, CommandSender searcher) throws BadPlayerMatchException {
+        return this.getPlayer(target, searcher, (String) null);
+    }
+
+    /**
+     * @param target
+     * @param searcher
+     *            set as null for accessing all players on server
+     * @param toIgnore
+     *            users to ignore
+     * @return player
+     * @throws TooManyPlayersException
+     * @throws NoPlayersException
+     */
+    public Player getPlayer(String target, CommandSender searcher, String... toIgnore) throws BadPlayerMatchException {
 
         final List<Player> players = new ArrayList<Player>();
+        final Set<String> toIgnoreSet = new HashSet<String>();
+        if (toIgnore != null) {
+            for (int i = 0; i < toIgnore.length; i++) {
+                if (toIgnore[i] != null) {
+                    toIgnoreSet.add(toIgnore[i].toLowerCase());
+                }
+            }
+        }
         final boolean hidingVanished = (searcher != null) && (searcher instanceof Player) && !VanishPerms.canSeeAll((Player) searcher);
         for (final Player player : J2MC_Manager.getCore().getServer().getOnlinePlayers()) {
             try {
-                if (!hidingVanished || !VanishNoPacket.isVanished(player.getName())) {
+                if (!toIgnoreSet.contains(player.getName()) && (!hidingVanished || !VanishNoPacket.isVanished(player.getName()))) {
                     if (player.getName().toLowerCase().contains(target.toLowerCase())) {
                         players.add(player);
                     }
