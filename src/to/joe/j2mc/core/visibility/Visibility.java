@@ -2,6 +2,7 @@ package to.joe.j2mc.core.visibility;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -101,6 +102,40 @@ public class Visibility {
             throw new NoPlayersException();
         }
         return players.get(0);
+    }
+    
+    /**
+     * Get a alphabetically sorted list of potential players from an incomplete beginning of a name
+     * 
+     * @param incompleteString The incomplete string
+     * @param searcher The searcher
+     * @return The sorted list
+     * @throws BadPlayerMatchException If no players were matched
+     */
+    public List<String> getPotentialMatches(String incompleteString, CommandSender searcher) throws BadPlayerMatchException {
+        
+        List<String> result = new ArrayList<String>();
+        final boolean hidingVanished = (searcher != null) && (searcher instanceof Player) && !VanishPerms.canSeeAll((Player) searcher);
+        
+        for (final Player player : J2MC_Manager.getCore().getServer().getOnlinePlayers()) {
+            try {
+                if (hidingVanished && VanishNoPacket.isVanished(player.getName())) {
+                    continue;
+                }
+                if (player.getName().startsWith(incompleteString)) {
+                    result.add(player.getName());
+                }
+            } catch (final VanishNotLoadedException e) {
+                J2MC_Manager.getCore().buggerAll("VanishNoPacket DIED");
+            }
+        }
+        
+        if (result.size() == 0) {
+            throw new NoPlayersException();
+        }
+        
+        Collections.sort(result);
+        return result;
     }
 
     /**
