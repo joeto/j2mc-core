@@ -35,9 +35,8 @@ public class J2MC_Core extends JavaPlugin {
     }
 
     /**
-     * Send message to those with j2mc.core.admin 
-     * and to the server log at INFO level
-     * This method is thread safe.
+     * Send message to those with j2mc.core.admin and to the server log at INFO
+     * level This method is thread safe.
      * 
      * @param message
      */
@@ -51,8 +50,7 @@ public class J2MC_Core extends JavaPlugin {
     }
 
     /**
-     * OMG SHUT THIS DOWN
-     * Do not use this from outside core.
+     * OMG SHUT THIS DOWN Do not use this from outside core.
      * 
      * @param reason
      */
@@ -61,8 +59,8 @@ public class J2MC_Core extends JavaPlugin {
     }
 
     /**
-     * OMG SHUT THIS DOWN (with added exception print)
-     * Do not use this from outside core.
+     * OMG SHUT THIS DOWN (with added exception print) Do not use this from
+     * outside core.
      * 
      * @param reason
      * @param exception
@@ -110,9 +108,9 @@ public class J2MC_Core extends JavaPlugin {
         }
         final String mySQLPassword = this.getConfig().getString("MySQL.password");
         final String mySQLDatabase = this.getConfig().getString("MySQL.database");
-        try{
-        J2MC_Manager.getInstance().setMySQL(new MySQL(mySQLDatabase, mySQLUsername, mySQLPassword, this));
-        }catch(Exception e){
+        try {
+            J2MC_Manager.getInstance().setMySQL(new MySQL(mySQLDatabase, mySQLUsername, mySQLPassword, this));
+        } catch (Exception e) {
             e.printStackTrace();
             J2MC_Core.this.buggerAll("SQL failure");
         }
@@ -124,11 +122,11 @@ public class J2MC_Core extends JavaPlugin {
         this.getCommand("debugcore").setExecutor(new DebugCommand(this));
 
         J2MC_Manager.getInstance().setVisibility(new Visibility());
-        
+
         if (getConfig().getBoolean("commandlogger", false)) {
             this.getServer().getPluginManager().registerEvents(new CommandLogger(this), this);
         }
-        
+
         this.getServer().getScheduler().scheduleSyncDelayedTask(this, new Runnable() {
             @Override
             public void run() {
