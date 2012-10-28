@@ -7,6 +7,11 @@ import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 
 import to.joe.j2mc.core.J2MC_Core;
 
+/**
+ * @deprecated
+ * @author Admin
+ *
+ */
 public class CommandLogger implements Listener {
 
     J2MC_Core core;

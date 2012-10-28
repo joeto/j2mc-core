@@ -124,7 +124,11 @@ public class J2MC_Core extends JavaPlugin {
         this.getCommand("debugcore").setExecutor(new DebugCommand(this));
 
         J2MC_Manager.getInstance().setVisibility(new Visibility());
-        this.getServer().getPluginManager().registerEvents(new CommandLogger(this), this);
+        
+        if (getConfig().getBoolean("commandlogger", false)) {
+            this.getServer().getPluginManager().registerEvents(new CommandLogger(this), this);
+        }
+        
         this.getServer().getScheduler().scheduleSyncDelayedTask(this, new Runnable() {
             @Override
             public void run() {
