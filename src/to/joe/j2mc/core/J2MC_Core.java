@@ -53,7 +53,7 @@ public class J2MC_Core extends JavaPlugin {
      *
      * @param reason the reason we're dying
      */
-    protected void buggerAll(String reason) {
+    public void buggerAll(String reason) {
         this.buggerAll(reason, null);
     }
 
@@ -64,7 +64,7 @@ public class J2MC_Core extends JavaPlugin {
      * @param reason  the reason we're dying
      * @param exception the exception to print
      */
-    protected void buggerAll(String reason, Exception exception) {
+    public void buggerAll(String reason, Exception exception) {
         if (exception != null) {
             this.getLogger().log(Level.SEVERE, "Shutdown caused by: " + reason, exception);
         } else {
