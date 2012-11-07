@@ -1,5 +1,7 @@
 package to.joe.j2mc.core.MySQL;
 
+import to.joe.j2mc.core.J2MC_Manager;
+
 import java.io.Closeable;
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -9,7 +11,7 @@ import java.util.concurrent.locks.ReentrantLock;
 
 public class MySQLConnectionPool implements Closeable {
 
-    private final static int poolsize = 4;
+    private final static int poolSize = 4;
     private final JDCConnection[] connections;
     private final String url;
     private final Lock lock = new ReentrantLock();
@@ -17,7 +19,7 @@ public class MySQLConnectionPool implements Closeable {
     public MySQLConnectionPool(String url) throws ClassNotFoundException, SQLException {
         Class.forName("com.mysql.jdbc.Driver");
         this.url = url;
-        connections = new JDCConnection[poolsize];
+        connections = new JDCConnection[poolSize];
         for (int i = 0; i < connections.length; i++) {
             connections[i] = new JDCConnection(DriverManager.getConnection(url));
         }
@@ -110,6 +112,8 @@ public class MySQLConnectionPool implements Closeable {
             try {
                 conn.close();
             } catch (final SQLException ex) {
+                J2MC_Manager.getCore().getLogger().warning("SQLException while terminating pool connection: " + ex.getMessage());
+                ex.printStackTrace();
             }
         }
     }

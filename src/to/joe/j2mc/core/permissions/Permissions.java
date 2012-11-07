@@ -73,7 +73,7 @@ public class Permissions implements Listener {
     
     /**
      * Retrieve player cache for thread safe methods
-     * @return
+     * @return the players on the server
      */
     public synchronized Player[] getPlayerCache() {
         return this.playerCache;
@@ -142,8 +142,6 @@ public class Permissions implements Listener {
      * Call to add a priority flag -> permission relation
      */
     public void addFlagPermissionRelation(String permissionNode, char flag, boolean value) {
-        HashMap<String, Boolean> tempMap = new HashMap<String, Boolean>();
-        tempMap.put(permissionNode, value);
         if (!this.modulePermissions.containsKey(flag)) {
             this.modulePermissions.put(flag, new HashMap<String, Boolean>());
         }
@@ -162,8 +160,8 @@ public class Permissions implements Listener {
     /**
      * Call to remove a permission from a player
      * 
-     * @param player
-     * @param permission
+     * @param player the player whose permission should be removed
+     * @param permission the permission to be removed
      */
     public void removePermission(Player player, String permission) {
         PermissionAttachment pa = this.attachments.get(player.getName());
@@ -173,8 +171,8 @@ public class Permissions implements Listener {
     /**
      * Temporarily add a flag to a player
      * 
-     * @param player
-     * @param flag
+     * @param player the player who the flag should be added to
+     * @param flag the flag
      */
     public void addFlag(Player player, char flag) {
         this.playerFlags.get(player.getName()).add(flag);
@@ -184,15 +182,15 @@ public class Permissions implements Listener {
     /**
      * Add a permanent flag to a player
      * 
-     * @param player
-     * @param flag
+     * @param player the player to add the flag to
+     * @param flag the flag to add
      */
     public void addPermanentFlag(Player player, char flag) {
-        final HashSet<Character> newFlags = this.playerFlags.get(player);
+        final HashSet<Character> newFlags = this.playerFlags.get(player.getName());
         newFlags.add(flag);
         this.playerFlags.put(player.getName(), newFlags);
         String toAdd = "";
-        for (final char derp : this.playerFlags.get(player)) {
+        for (final char derp : this.playerFlags.get(player.getName())) {
             toAdd += derp;
         }
         try {
@@ -209,8 +207,8 @@ public class Permissions implements Listener {
     /**
      * Add a permanent flag to a player (use for offline players)
      * 
-     * @param player
-     * @param flag
+     * @param player the player to add the flag to
+     * @param flag the flag to add
      */
     public void addPermanentFlag(String player, char flag) {
         try {
@@ -231,8 +229,8 @@ public class Permissions implements Listener {
     /**
      * Remove a flag from a player, temporarily
      * 
-     * @param player
-     * @param flag
+     * @param player the player from whom to remove it
+     * @param flag the flag to remove
      */
     public void delFlag(Player player, char flag) {
         this.playerFlags.get(player.getName()).remove(flag);
@@ -250,14 +248,7 @@ public class Permissions implements Listener {
      * @return Returns true if player has flag, returns false if doesn't.
      */
     public boolean hasFlag(String player, char flag) {
-        if (this.playerFlags.get(player) == null) {
-            return false;
-        }
-        if (this.playerFlags.get(player).contains(flag)) {
-            return true;
-        } else {
-            return false;
-        }
+        return this.playerFlags.get(player) != null && this.playerFlags.get(player).contains(flag);
     }
 
     public void initializePlayerPermissions(String name) {
@@ -294,7 +285,7 @@ public class Permissions implements Listener {
     
     /**
      * Checks if player is admin, thread safe.
-     * @param Player name
+     * @param playerName the player's name
      *
      */
     public boolean isAdmin(String playerName) {
@@ -304,7 +295,7 @@ public class Permissions implements Listener {
     /**
      * Returns player's flags
      * 
-     * @param player
+     * @param player the player whose flags you want
      * 
      */
     public HashSet<Character> getFlags(String player) {
@@ -323,7 +314,7 @@ public class Permissions implements Listener {
      * Called when a player joins the game.
      * Do not call this
      * 
-     * @param player
+     * @param event the login event
      */
     @EventHandler(priority = EventPriority.LOWEST)
     public void playerLogin(PlayerLoginEvent event) {
@@ -338,7 +329,7 @@ public class Permissions implements Listener {
      * Called when the player quits
      * Do not call this.
      * 
-     * @param player
+     * @param event the player quit event
      */
     @EventHandler(priority = EventPriority.HIGHEST)
     public void playerQuit(PlayerQuitEvent event) {

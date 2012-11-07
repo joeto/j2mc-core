@@ -34,27 +34,23 @@ public class MySQL {
     /**
      * Hot and ready for consumption
      * 
-     * @param query
-     * @return
+     * @param query the query
+     * @return a prepared statement generated from the query
      * @throws SQLException
-     * @throws ClassNotFoundException
      */
     public PreparedStatement getFreshPreparedStatementHotFromTheOven(String query) throws SQLException {
-        final PreparedStatement preparedStatement = pool.getConnection().prepareStatement(query);
-        return preparedStatement;
+        return pool.getConnection().prepareStatement(query);
     }
 
     /**
      * Delicious PreparedStatements but with a generate keys attached!
      * 
-     * @param query
-     * @return
+     * @param query the query
+     * @return a prepared statement generated from the query with the generated keys
      * @throws SQLException
-     * @throws ClassNotFoundException
      */
     public PreparedStatement getFreshPreparedStatementWithGeneratedKeys(String query) throws SQLException {
-        final PreparedStatement ps = pool.getConnection().prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
-        return ps;
+        return pool.getConnection().prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
     }
     
     /**
@@ -67,7 +63,7 @@ public class MySQL {
     
     /**
      * Gets the current connection pool
-     * @return
+     * @return the current MySQLConnectionPool
      */
     public MySQLConnectionPool getPool() {
         return pool;

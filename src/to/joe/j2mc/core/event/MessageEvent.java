@@ -1,5 +1,6 @@
 package to.joe.j2mc.core.event;
 
+import java.util.Collections;
 import java.util.HashSet;
 
 import org.bukkit.event.Event;
@@ -12,14 +13,12 @@ public class MessageEvent extends Event {
     /**
      * Return a HashSet of Strings submitted
      * 
-     * @param strings
-     * @return
+     * @param strings the strings to be inserted in the hashset
+     * @return the hashset with all the strings
      */
     public static HashSet<String> compile(String... strings) {
         final HashSet<String> set = new HashSet<String>();
-        for (final String string : strings) {
-            set.add(string);
-        }
+        Collections.addAll(set, strings);
         return set;
     }
 
