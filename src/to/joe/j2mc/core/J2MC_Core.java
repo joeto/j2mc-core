@@ -18,27 +18,27 @@ public class J2MC_Core extends JavaPlugin {
 
     /**
      * Combine string array with specified separator
-     * 
-     * @param startIndex
-     * @param string
-     * @param seperator
-     * @return
+     *
+     * @param startIndex the index from where to start in the array
+     * @param string the string array to be glued together
+     * @param separator the "glue" used to join the array elements
+     * @return the string array elements in a string object joined by the separator
      */
-    public static String combineSplit(int startIndex, String[] string, String seperator) {
+    public static String combineSplit(int startIndex, String[] string, String separator) {
         final StringBuilder builder = new StringBuilder();
         for (int i = startIndex; i < string.length; i++) {
             builder.append(string[i]);
-            builder.append(seperator);
+            builder.append(separator);
         }
-        builder.deleteCharAt(builder.length() - seperator.length());
+        builder.deleteCharAt(builder.length() - separator.length());
         return builder.toString();
     }
 
     /**
      * Send message to those with j2mc.core.admin and to the server log at INFO
      * level This method is thread safe.
-     * 
-     * @param message
+     *
+     * @param message the message to be logged and sent
      */
     public void adminAndLog(String message) {
         for (final Player player : J2MC_Manager.getPermissions().getPlayerCache()) {
@@ -51,21 +51,21 @@ public class J2MC_Core extends JavaPlugin {
 
     /**
      * OMG SHUT THIS DOWN Do not use this from outside core.
-     * 
-     * @param reason
+     *
+     * @param reason the reason we're dying
      */
-    public void buggerAll(String reason) {
+    protected void buggerAll(String reason) {
         this.buggerAll(reason, null);
     }
 
     /**
      * OMG SHUT THIS DOWN (with added exception print) Do not use this from
      * outside core.
-     * 
-     * @param reason
-     * @param exception
+     *
+     * @param reason  the reason we're dying
+     * @param exception the exception to print
      */
-    public void buggerAll(String reason, Exception exception) {
+    protected void buggerAll(String reason, Exception exception) {
         if (exception != null) {
             this.getLogger().log(Level.SEVERE, "Shutdown caused by: " + reason, exception);
         } else {
@@ -75,10 +75,10 @@ public class J2MC_Core extends JavaPlugin {
     }
 
     /**
-     * Send a message to users with specified permission
-     * 
-     * @param permission
-     * @param message
+     * Send a message to users without the specified permission
+     *
+     * @param permission the permission that players without should receive the message
+     * @param message the message
      */
     public void messageByNoPermission(String message, String permission) {
         for (final Player player : this.getServer().getOnlinePlayers()) {
@@ -113,6 +113,7 @@ public class J2MC_Core extends JavaPlugin {
         } catch (Exception e) {
             e.printStackTrace();
             J2MC_Core.this.buggerAll("SQL failure");
+            return;
         }
 
         J2MC_Manager.getInstance().setServerID(this.getConfig().getInt("General.server-id"));
