@@ -9,7 +9,6 @@ import org.kitteh.vanish.staticaccess.VanishNoPacket;
 import to.joe.j2mc.core.MySQL.MySQL;
 import to.joe.j2mc.core.command.DebugCommand;
 import to.joe.j2mc.core.command.ReloadPermissionsCommand;
-import to.joe.j2mc.core.log.CommandLogger;
 import to.joe.j2mc.core.log.LogColors;
 import to.joe.j2mc.core.permissions.Permissions;
 import to.joe.j2mc.core.visibility.Visibility;
@@ -123,10 +122,6 @@ public class J2MC_Core extends JavaPlugin {
         this.getCommand("debugcore").setExecutor(new DebugCommand(this));
 
         J2MC_Manager.getInstance().setVisibility(new Visibility());
-
-        if (getConfig().getBoolean("commandlogger", false)) {
-            this.getServer().getPluginManager().registerEvents(new CommandLogger(this), this);
-        }
 
         this.getServer().getScheduler().scheduleSyncDelayedTask(this, new Runnable() {
             @Override
