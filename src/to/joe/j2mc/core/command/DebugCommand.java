@@ -8,13 +8,10 @@ import to.joe.j2mc.core.J2MC_Core;
 import to.joe.j2mc.core.J2MC_Manager;
 import to.joe.j2mc.core.MySQL.MySQLConnectionPool.JDCConnection;
 
-public class DebugCommand extends MasterCommand {
-
-    J2MC_Core plugin;
+public class DebugCommand extends MasterCommand<J2MC_Core> {
 
     public DebugCommand(J2MC_Core core) {
         super(core);
-        this.plugin = core;
     }
 
     @Override

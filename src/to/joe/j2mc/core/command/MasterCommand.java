@@ -15,10 +15,10 @@ import to.joe.j2mc.core.exceptions.BadPlayerMatchException;
 /**
  * Abstract class from which all j2 commands come
  */
-public abstract class MasterCommand implements TabExecutor {
-    protected JavaPlugin plugin;
+public abstract class MasterCommand<T extends JavaPlugin> implements TabExecutor {
+    protected T plugin;
 
-    public MasterCommand(JavaPlugin plugin) {
+    public MasterCommand(T plugin) {
         this.plugin = plugin;
     }
 
