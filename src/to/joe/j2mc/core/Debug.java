@@ -10,9 +10,8 @@ public class Debug {
     }
 
     public static void log(String message) {
-        if (!Debug.enabled) {
-            return;
+        if (Debug.enabled) {
+            Bukkit.getLogger().info(message);
         }
-        Bukkit.getLogger().info(message);
     }
 }

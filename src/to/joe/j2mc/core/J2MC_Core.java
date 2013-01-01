@@ -29,13 +29,13 @@ public class J2MC_Core extends JavaPlugin {
             builder.append(string[i]);
             builder.append(separator);
         }
-        builder.deleteCharAt(builder.length() - separator.length());
+        builder.setLength(builder.length() - separator.length());
         return builder.toString();
     }
 
     /**
-     * Send message to those with j2mc.core.admin and to the server log at INFO
-     * level This method is thread safe.
+     * Send message to those with j2mc.core.admin and to the server log as INFO
+     * This method is thread safe.
      *
      * @param message the message to be logged and sent
      */
@@ -110,8 +110,7 @@ public class J2MC_Core extends JavaPlugin {
         try {
             J2MC_Manager.getInstance().setMySQL(new MySQL(mySQLDatabase, mySQLUsername, mySQLPassword, this));
         } catch (Exception e) {
-            e.printStackTrace();
-            J2MC_Core.this.buggerAll("SQL failure");
+            J2MC_Core.this.buggerAll("SQL failure", e);
             return;
         }
 

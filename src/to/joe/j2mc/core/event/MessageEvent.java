@@ -36,10 +36,8 @@ public class MessageEvent extends Event {
     }
 
     /**
-     * Returns all targets
-     * 
+     * @return all targets
      */
-
     public HashSet<String> alltargets() {
         return this.targets;
     }
