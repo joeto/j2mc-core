@@ -26,7 +26,7 @@ public class Visibility {
      * @return
      */
     public List<Player> getOnlinePlayers(Player searcher) {
-        final List<Player> players = Arrays.asList(J2MC_Manager.getCore().getServer().getOnlinePlayers());
+        final List<Player> players = new ArrayList<Player>(Arrays.asList(J2MC_Manager.getCore().getServer().getOnlinePlayers()));
         if ((searcher != null) && !VanishPerms.canSeeAll(searcher)) {
             for (final Player player : J2MC_Manager.getCore().getServer().getOnlinePlayers()) {
                 try {
